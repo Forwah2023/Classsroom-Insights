@@ -21,5 +21,5 @@ Csv files can be created with Microsoft Excel.
 
 *****AUTHOR******
 
-Forwah Amstrong Tah Ph.D <lmsoftware2023@gmail.com>
+Forwah Amstrong Tah, Ph.D <lmsoftware2023@gmail.com>
 
