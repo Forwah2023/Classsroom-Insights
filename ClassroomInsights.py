@@ -1,5 +1,6 @@
 import sys
 import os
+sys.path.append(sys.path.append(os.path.join(os.path.dirname(__file__), 'CI_lib')))# include path to imports
 from PyQt5.QtWidgets import QMainWindow,QDialog,QWidget,QApplication, QAction, QFileDialog,QTableWidgetItem, QInputDialog,QMenu,QSystemTrayIcon
 from PyQt5 import QtWidgets, QtCore, QtGui 
 from PyQt5.QtCore import Qt
