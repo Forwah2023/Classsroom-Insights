@@ -9,15 +9,15 @@ colleagues for  more comprehensive perspective on performance.
 ******HOW TO USE********
 
 1. Launch the ClassroomInsights.py (requires python 3) or Classroom Insights.exe (if available).
-2. If you wish to compute the scores statistics, open a csv file from the menu bar
-3. If you wish to compute statistics on lessons and hours, launch the pedagogy app from the menu bar
+2. If you wish to compute the scores statistics, open a csv file from the menu bar of the app.
+3. If you wish to compute statistics on lessons and hours, launch the pedagogy app from the menu bar.
 4. If you wish to access, edit or create databases for your statistics, launch the database manager from the menu bar. Databases are stored in the DBS folder by default.
 
 *****IMPORTANT NOTES********
 1. An Example .csv file is provided with the installer and located in the install directory folder: <Example Input>. 
 Csv files can be created with Microsoft Excel.
 2.Instructions on how to format the csv  file is located in the documentation which can be accessed from the menu bar
-3. An empty "DBS" folder needs to be created in the install directory to store created and existing databases.
+3. An empty "DBS" folder needs to be created (if it does not exist) in the install directory to store created and existing databases.
 
 *****AUTHOR******
 
