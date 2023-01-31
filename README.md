@@ -6,6 +6,14 @@ tools to evaluate the teacher's own pedagogic performance against expected metri
 As a bonus, Classroom Insights is designed to allow for archiving of statistics per sequence into a database file which can be shared with other 
 colleagues for  more comprehensive perspective on performance.
 
+******IMPORTANT FEATURES******
+1. Computes descriptive statistics of student's and classroom test scores.
+2. Computes the gender performance statistics for a given test.
+3. Computes the lessons and hours statistics of the teacher for a given test.
+4. Provides a graphical overview of students' performances.
+5. Identifies weak and strong students based on the performance over a sequence of tests.
+6. Archives the various statistics into a database for future reference and comprehensive statistical view.
+
 ******HOW TO USE********
 
 1. Launch the ClassroomInsights.py (requires python 3) or Classroom Insights.exe (if available).
