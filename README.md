@@ -3,7 +3,7 @@
 It was designed to be the teacher's companion when drafting end-of-sequence or end-of-year reports on classroom performances. This software features
 tools to evaluate the teacher's own pedagogic performance against expected metrics. Classroom Insights will allow the teacher to have a unique
  perspective on their performance as well as on those of their students, and provide insights into how these performance indices may be improved upon.
-As a bonus, Classroom Insights is designd to allow for archiving of statistics per sequence into a database file which can be shared with other 
+As a bonus, Classroom Insights is designed to allow for archiving of statistics per sequence into a database file which can be shared with other 
 colleagues for  more comprehensive perspective on performance.
 
 ******HOW TO USE********
