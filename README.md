@@ -8,7 +8,7 @@ colleagues for  more comprehensive perspective on performance.
 
 ******HOW TO USE********
 
-1. Launch the ClassroomInsights.py (requires python 3)
+1. Launch the ClassroomInsights.py (requires python 3) or Classroom Insights.exe (if available).
 2. If you wish to compute the scores statistics, open a csv file from the menu bar
 3. If you wish to compute statistics on lessons and hours, launch the pedagogy app from the menu bar
 4. If you wish to access, edit or create databases for your statistics, launch the database manager from the menu bar. Databases are stored in the DBS folder by default.
