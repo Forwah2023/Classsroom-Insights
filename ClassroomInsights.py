@@ -446,7 +446,7 @@ class Main_ui_class_Ins (QMainWindow):
 			self.ui.label_Mode.setText('{:.4f}'.format(stats_left['mode']))
 		if 'stdv' in stats_left:
 			self.ui.label_Stdv.setText('{:.4f}'.format(stats_left['stdv']))
-		if 'Range' in stats_left:
+		if ('min_scr' in stats_left) and ('max_scr' in stats_left):
 			self.ui.labelRange.setText('{:.2f}--{:.2f}'.format(stats_left['min_scr'],stats_left['max_scr']))
 		cleared_stats=False
 	def set_stats_label_right(self,stats_right):
