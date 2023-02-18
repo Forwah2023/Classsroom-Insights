@@ -5,6 +5,7 @@ tools to evaluate the teacher's own pedagogic performance against expected metri
  perspective on their performance as well as on those of their students, and provide insights into how these performance indices may be improved upon.
 As a bonus, Classroom Insights is designed to allow for archiving of statistics per sequence into a database file which can be shared with other 
 colleagues for  more comprehensive perspective on performance.
+
 ![Main UI](https://a.fsdn.com/con/app/proj/classsroom-insights/screenshots/CI_ScoreUI%20.png/max/max/1)
 
 ## IMPORTANT FEATURES
@@ -20,7 +21,9 @@ colleagues for  more comprehensive perspective on performance.
 ###### Python installation
 1. Install python 3 (developed, tested and run on python 3.9) from the official website.
 2. Install PyQt5, scipy,matplotlib  from command line using python's pip (package manager) via:
-           ```python -m pip install PyQt5, scipy, matplotlib ```
+ ```
+ python -m pip install PyQt5, scipy, matplotlib 
+ ```
 3. Open the *ClassroomInsights.py* with python's *IDLE* editor and run
 4. An example CSV file: *Example_Class1.csv* is provided wih the app. Open this file from the app.
 
