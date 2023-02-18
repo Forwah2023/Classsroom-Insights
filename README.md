@@ -17,14 +17,14 @@ colleagues for  more comprehensive perspective on performance.
 
 ## INSTALLATION
 
-##### Python installation
+###### Python installation
 1. Install python 3 (developed, tested and run on python 3.9) from the official website.
 2. Install PyQt5, scipy,matplotlib  from command line using python's pip (package manager) via:
            ```python -m pip install PyQt5, scipy, matplotlib ```
 3. Open the *ClassroomInsights.py* with python's *IDLE* editor and run
 4. An example CSV file: *Example_Class1.csv* is provided wih the app. Open this file from the app.
 
-##### Desktop installation
+###### Desktop installation
 1. Download the *Classroom-Insights.exe* setup from [SourceForge](https://sourceforge.net/projects/classsroom-insights/)
 2. Install and run.
 
@@ -42,6 +42,6 @@ CSV files can be created with Microsoft Excel.
 2.Instructions on how to format the csv  file is located in the documentation which can be accessed from the menu bar of the app.
 3. An empty "DBS" folder needs to be created (if it does not exist) in the install directory to store created and existing databases.
 
-##### AUTHOR
+###### AUTHOR
 Forwah Amstrong Tah, Ph.D <lmsoftware2023@gmail.com>
 
