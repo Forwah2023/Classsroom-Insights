@@ -1123,7 +1123,7 @@ class DBMain_W(QDialog):
 				self.ui.label_success_create.setText("Database is created!")
 			except Error as e:
 				self.label_success_create.setText("Some error has occurred!")
-			finally:
+			else:
 				#create connection to the database
 				c = conn.cursor()
 				# create a table of usernames and passwaords if user wishes to secure the database
@@ -1168,7 +1168,7 @@ class DBMain_W(QDialog):
 				conn = sqlite3.connect(DbFile_selected)
 			except Error as e:
 				print("Error accessing Database!")
-			finally:
+			else:
 				c = conn.cursor()
 				c.execute('''SELECT count(name) FROM sqlite_master WHERE type='table' AND name='Users' ''')
 				#If Users table is present move to sign-in form and disable the other tabs
@@ -1487,7 +1487,7 @@ class DBMain_W(QDialog):
 			except Error as e:
 				print("Error accessing Database!")
 				return None
-			finally:
+			else:
 				return conn
 ######################################MAIN#########
 if __name__=="__main__":
