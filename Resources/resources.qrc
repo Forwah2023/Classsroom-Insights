@@ -1,0 +1,22 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="icons">
+        <file alias="mainIcon.png">Icons/Cins.png</file>  
+        <file alias="question.png">Icons/question.png</file> 
+		<file alias="safe.png">Icons/safe.png</file>
+		<file alias="document.png">Icons/document.png</file>
+		<file alias="book.png">Icons/book.png</file>
+		<file alias="rightArr.png">Icons/arrow.png</file>
+		<file alias="leftArr.png">Icons/arrow-180.png</file>
+		<file alias="delete.png">Icons/cross.png</file>
+		<file alias="Dbase.png">Icons/database.png</file>
+		<file alias="DbaseAdd.png">Icons/database--plus.png</file>
+		<file alias="Reload.png">Icons/Reload.png</file>
+		<file alias="Deleterow.png">Icons/database--minus.png</file>
+		<file alias="Insertrow.png">Icons/database-import.png</file>
+		<file alias="search.png">Icons/magnifier.png</file>
+		<file alias="Databases.png">Icons/databases.png</file>
+		<file alias="calc.png">Icons/calculator.png</file>
+		
+    </qresource>
+</RCC>
