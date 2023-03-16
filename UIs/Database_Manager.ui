@@ -649,13 +649,20 @@
     <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
-       <x>290</x>
+       <x>208</x>
        <y>170</y>
-       <width>161</width>
-       <height>20</height>
+       <width>251</width>
+       <height>21</height>
       </rect>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <item>
+       <widget class="QPushButton" name="pushButtonCopySel">
+        <property name="text">
+         <string>Copy selection</string>
+        </property>
+       </widget>
+      </item>
       <item>
        <widget class="QPushButton" name="pushButtonDRDB">
         <property name="text">

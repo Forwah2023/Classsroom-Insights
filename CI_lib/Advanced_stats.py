@@ -40,7 +40,7 @@ class Ui_Dialog_Adv_Stats(object):
         self.spinBoxN.setObjectName("spinBoxN")
         self.horizontalLayout.addWidget(self.spinBoxN)
         self.pushButtonshow = QtWidgets.QPushButton(Dialog_Adv_Stats)
-        self.pushButtonshow.setGeometry(QtCore.QRect(250, 280, 56, 17))
+        self.pushButtonshow.setGeometry(QtCore.QRect(250, 280, 61, 21))
         self.pushButtonshow.setObjectName("pushButtonshow")
         self.label_count = QtWidgets.QLabel(Dialog_Adv_Stats)
         self.label_count.setGeometry(QtCore.QRect(220, 250, 111, 16))
@@ -121,6 +121,9 @@ class Ui_Dialog_Adv_Stats(object):
         self.tableWidget_reg_pred.setObjectName("tableWidget_reg_pred")
         self.tableWidget_reg_pred.setColumnCount(0)
         self.tableWidget_reg_pred.setRowCount(0)
+        self.pushButtonCopySel = QtWidgets.QPushButton(Dialog_Adv_Stats)
+        self.pushButtonCopySel.setGeometry(QtCore.QRect(340, 280, 81, 21))
+        self.pushButtonCopySel.setObjectName("pushButtonCopySel")
 
         self.retranslateUi(Dialog_Adv_Stats)
         QtCore.QMetaObject.connectSlotsByName(Dialog_Adv_Stats)
@@ -144,4 +147,5 @@ class Ui_Dialog_Adv_Stats(object):
         self.radioButtonTop.setText(_translate("Dialog_Adv_Stats", "Top "))
         self.radioButton_Bottom.setToolTip(_translate("Dialog_Adv_Stats", "Trailing over chosen sequence"))
         self.radioButton_Bottom.setText(_translate("Dialog_Adv_Stats", "Bottom "))
+        self.pushButtonCopySel.setText(_translate("Dialog_Adv_Stats", "Copy selection"))
 import resources_rc
