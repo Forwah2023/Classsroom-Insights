@@ -43,7 +43,6 @@ colleagues for  more comprehensive perspective on performance.
 1. An Example .csv file is provided with the installer and located in the install directory folder: Example Input. 
 CSV files can be created with Microsoft Excel.
 2.Instructions on how to format the csv  file is located in the documentation which can be accessed from the menu bar of the app.
-3. An empty "DBS" folder needs to be created (if it does not exist) in the install directory to store created and existing databases.
 
 ###### AUTHOR
 Forwah Amstrong Tah, Ph.D <lmsoftware2023@gmail.com>
