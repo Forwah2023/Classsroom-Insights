@@ -13,7 +13,7 @@ def fetch_scores_seq(seq_num,class_list):
 	#Check is score for sequence N is not empty and is number
 		if student[seq_numstr].isnumeric():
 		#request only positive scores
-			if int(student[seq_numstr])>=0:
+			if float(student[seq_numstr])>=0:
 				scores.append(student[seq_numstr]) 
 	if scores:
 		scores_int=[eval(i) for i in scores]
@@ -40,7 +40,7 @@ def fetch_scores_sdt(sdt_n,seq_range,class_list):
 		if sdt_n == student['REG_NUM'] or sdt_n == student['FULL_NAME']:
 			for i in seq_range:
 				if student[i].isnumeric():
-					if int(student[i])>=0: 
+					if float(student[i])>=0: 
 						scores.append(student[i])
 			#Leave loop once student is found
 			break
@@ -116,8 +116,8 @@ def find_greatest_smallest_score_sq(class_list,seq_numstr,cutoff):
 		class_list here is the regular classlist with FULL_NAMES ,seqences and sexes.
 	'''
 	import heapq
-	sup_sdts=heapq.nlargest(cutoff,class_list, key= lambda sdt:int(sdt['S'+seq_numstr]) if sdt['S'+seq_numstr].isnumeric() else 0)
-	sub_sdts=heapq.nsmallest(cutoff,class_list, key= lambda sdt: int(sdt['S'+seq_numstr]) if sdt['S'+seq_numstr].isnumeric() else 0)
+	sup_sdts=heapq.nlargest(cutoff,class_list, key= lambda sdt:float(sdt['S'+seq_numstr]) if sdt['S'+seq_numstr].isnumeric() else 0)
+	sub_sdts=heapq.nsmallest(cutoff,class_list, key= lambda sdt: float(sdt['S'+seq_numstr]) if sdt['S'+seq_numstr].isnumeric() else 0)
 	return [sup_sdts,sub_sdts]
 	
 def count_sexes(class_list):
@@ -137,9 +137,9 @@ def find_sdt_passed(class_list,seq_num,pass_thres,stats_op):
 	Gen_stats={}
 	seq_numstr='S'+str(seq_num)
 	#Search boy and girls above threshold(thres) as well as their total
-	BP=[sdt for sdt in class_list if sdt['SEX']=='M' and sdt[seq_numstr]!='' and int(sdt[seq_numstr])>=pass_thres]
-	GP=[sdt for sdt in class_list if sdt['SEX']=='F' and sdt[seq_numstr]!='' and int(sdt[seq_numstr])>=pass_thres]
-	TP=[sdt for sdt in class_list if sdt[seq_numstr]!='' and int(sdt[seq_numstr])>=pass_thres]
+	BP=[sdt for sdt in class_list if sdt['SEX']=='M' and sdt[seq_numstr]!='' and float(sdt[seq_numstr])>=pass_thres]
+	GP=[sdt for sdt in class_list if sdt['SEX']=='F' and sdt[seq_numstr]!='' and float(sdt[seq_numstr])>=pass_thres]
+	TP=[sdt for sdt in class_list if sdt[seq_numstr]!='' and float(sdt[seq_numstr])>=pass_thres]
 	if 1 in stats_op:
 		Gen_stats['boys_pass']=BP
 		Gen_stats['n_boys_pass']=len(BP)

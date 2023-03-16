@@ -872,6 +872,7 @@ class advanced_w(QDialog):
 		self.ui.spinBoxSeqN.setMaximum(max_seq)
 		self.ui.spinBoxN.setMaximum(len(class_list))
 		self.ui.pushButtonshow.clicked.connect(self.decide_show)
+		self.ui.pushButtonCopySel.clicked.connect(self.copy_selection_adv)
 		self.ui.label_NDec.setText(str(self.ui.spinBoxN.value()))
 		self.ui.label_NImp.setText(str(self.ui.spinBoxN.value()))
 		self.ui.label_Ntop.setText(str(self.ui.spinBoxN.value()))
@@ -909,9 +910,8 @@ class advanced_w(QDialog):
 		class_list_reg=[]
 		for student in class_list:
 			for i in seq_range:
-				if student[i].isnumeric():
-					if int(student[i])>=0: 
-						scores.append(student[i])
+				if student[i].isnumeric() and float(student[i])>=0: 
+					scores.append(student[i])
 			if scores:
 				scores_int=[eval(i) for i in scores]
 				x_scores=list(range(1,len(scores_int)+1))
@@ -966,6 +966,11 @@ class advanced_w(QDialog):
 				item=QTableWidgetItem(row)
 				self.ui.tableWidget_reg_pred.setItem(tab_row,tab_col,item)
 				tab_row+=1
+	def copy_selection_adv(self):
+		res=self.ui.tableWidget_reg_pred.selectedItems()
+		if res:
+			selectn=[item.text() for item in res]
+			clipboard.setText('\n'.join(selectn))
 class DBMain_W(QDialog):
 	def __init__(self):
 		super().__init__()
@@ -986,6 +991,7 @@ class DBMain_W(QDialog):
 		self.ui.buttonBoxBD.rejected.connect(self.DeselectedList)
 		self.ui.pushButton_ShowDB.clicked.connect(self.DisplayDBTable)
 		self.ui.pushButtonAddtoDB.clicked.connect(self.Insert_rowsDB)
+		self.ui.pushButtonCopySel.clicked.connect(self.copy_selection_BD)
 		self.ui.pushButtonDRDB.clicked.connect(self.DeleteRowDB)
 		self.ui.pushButtonInsrtTotals.clicked.connect(self.InsertTotals)
 		self.ui.tabWidget.setTabEnabled(1,False)
@@ -1369,6 +1375,11 @@ class DBMain_W(QDialog):
 				self.DisplayDBTable()
 			else:
 				self.ui.label_star1.setText('Table does not exist')
+	def copy_selection_BD(self):
+		res=self.ui.tableWidgetDB.selectedItems()
+		if res:
+			selectn=[item.text() for item in res]
+			clipboard.setText('\n'.join(selectn))	
 	def DeleteRowDB(self):
 		'''Delete a given row from a statistics table'''
 		conn=self.conToDB()
@@ -1442,8 +1453,8 @@ class DBMain_W(QDialog):
 					colnum+=1
 				#set position for computing total percentages from 'HT_seq_per' to end of row
 				for colnum in range(19,29,3):
-					item1=int(self.ui.tableWidgetDB.item(rownumInst,colnum-1).text())
-					item2=int(self.ui.tableWidgetDB.item(rownumInst,colnum-2).text())
+					item1=float(self.ui.tableWidgetDB.item(rownumInst,colnum-1).text())
+					item2=float(self.ui.tableWidgetDB.item(rownumInst,colnum-2).text())
 					try:
 						item_12_per=(item1/item2)*100
 						item=QTableWidgetItem(str(item_12_per))
@@ -1452,8 +1463,8 @@ class DBMain_W(QDialog):
 						print('Cannot divide by zero!')
 				#set percentages from 'Boys_pass_per' to 'Total_pass_per'
 				for colnum in range(12,17,2):
-					item1=int(self.ui.tableWidgetDB.item(rownumInst,colnum-1).text())
-					item2=int(self.ui.tableWidgetDB.item(rownumInst,2).text())
+					item1=float(self.ui.tableWidgetDB.item(rownumInst,colnum-1).text())
+					item2=float(self.ui.tableWidgetDB.item(rownumInst,2).text())
 					try:
 						item_12_per=(item1/item2)*100
 						item=QTableWidgetItem(str(item_12_per))
