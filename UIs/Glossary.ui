@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form_gloss</class>
+ <widget class="QWidget" name="Form_gloss">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>382</width>
+    <height>242</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Documentation</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../Resources/resources.qrc">
+    <normaloff>:/icons/mainIcon.png</normaloff>:/icons/mainIcon.png</iconset>
+  </property>
+  <widget class="QTextBrowser" name="textBrowser">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>40</y>
+     <width>321</width>
+     <height>151</height>
+    </rect>
+   </property>
+   <property name="html">
+    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; font-style:italic; color:#ff0000;&quot;&gt;SETTING UP THE .CSV FILE (INPUT FILE)&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt; font-weight:600; font-style:italic; color:#ff0000;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;       For the correct and approrpiate reading, and interpretation of the .csv file, format the header of the .csv file according to the following fields (in any order of your preference):&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;REG_NUM: &lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt;Defines the column or field of registration numbers of students. This is the unique identifier of the latter. Although this field may be omitted in the .csv file, it is preferable to use the numbers;1,2,3,..., if the registration numbers are unavailable.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;FULL_NAME: &lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt;Defines the column of the unique string identifiers of students. Names could could containing anywhere from a single character to any  word length of your choice. If multiple names are are present, space them accordingly.Either FULL_NAME or REG_NUM must be provided for the proper functioning of the software.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;S1, S2  or SN:&lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt; Defines the column of a records for sequence(N). That is, column S1 defines scores for sequence 1, S2 sequence 2 and so on. This field is mandatory for the software to work correctly. &lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;SEX: &lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt;Defines the column containing information on the sex of the students. The entries under this column should contain the labels M ( resp. F) representing male (resp. female).&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt; color:#0055ff;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; font-style:italic; color:#ff0000;&quot;&gt;USEFUL NOTATIONS&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt; font-weight:600; font-style:italic; color:#ff0000;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;Boys passed %&lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#0055ff;&quot;&gt;:&lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; Percentage of boys passed.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;F&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-style:italic; color:#0055ff;&quot;&gt;:&lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-style:italic;&quot;&gt;Female.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;Girls passed %&lt;/span&gt;&lt;span style=&quot; font-size:11pt; color:#0055ff;&quot;&gt;:&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-style:italic;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Percentage of girls passed.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;HD:&lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt; Hours due.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;HD/seq: &lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt;Hours due per sequence.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;HD/yr: &lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt;Hours due per year.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;HT : &lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt;Hours taught.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;HT/seq: &lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt;Hours taught per sequence&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt; .&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;HT/yr : &lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt;Hours taught per year.&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt; &lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;M&lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;=Males.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;N.Boys passed&lt;/span&gt;&lt;span style=&quot; font-size:11pt; font-style:italic; color:#0055ff;&quot;&gt;:&lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; Number of boys passed.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;N.Girls passed&lt;/span&gt;&lt;span style=&quot; font-size:11pt; font-style:italic; color:#0055ff;&quot;&gt;:&lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; Number of boys passed.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;LD: &lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt; Lessons due.&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt; &lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;LD/seq : &lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt; Lessons due per sequence.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;LD/yr:  &lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt;Lessons due per year.&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt; &lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;LT : &lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt;Lessons taught&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;LT/seq : &lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt;Lessons taught per sequence&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;LT/yr: &lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt;Lessons taught per year&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;Std.dev&lt;/span&gt;&lt;span style=&quot; font-size:11pt; font-style:italic; color:#0055ff;&quot;&gt;: &lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Standard deviation&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;Seq.Num&lt;/span&gt;&lt;span style=&quot; font-size:11pt; font-style:italic; color:#0055ff;&quot;&gt;:&lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; Sequence number&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;Total passed&lt;/span&gt;&lt;span style=&quot; font-size:11pt; font-style:italic; color:#0055ff;&quot;&gt;:&lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; Total number of boys and girls passed&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;Total passed %&lt;/span&gt;&lt;span style=&quot; font-size:11pt; color:#0055ff;&quot;&gt;:&lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; Percentage of boys passed&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;Top N  improving:  &lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Describes the list of N-students whose performace over a sequence range have shown a net upwards trend.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;Top N declining: &lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Describes the list of N-students whose performace over a sequence range have shown a net downwards trend.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;Top N: &lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Describes the list of N-students whose performace over a sequence tops the group.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; font-style:italic; color:#0055ff;&quot;&gt;Bottom N: &lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Describes the list of N-students whose performace over a sequence trails the group.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>0</y>
+     <width>191</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>16</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>DOCUMENTATION</string>
+   </property>
+  </widget>
+ </widget>
+ <resources>
+  <include location="../Resources/resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>
