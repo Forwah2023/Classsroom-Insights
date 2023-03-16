@@ -910,7 +910,7 @@ class advanced_w(QDialog):
 		class_list_reg=[]
 		for student in class_list:
 			for i in seq_range:
-				if student[i].isnumeric() and float(student[i])>=0: 
+				if student[i].replace('.','',1).isdigit() and float(student[i])>=0: 
 					scores.append(student[i])
 			if scores:
 				scores_int=[eval(i) for i in scores]
