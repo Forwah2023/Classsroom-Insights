@@ -21,6 +21,7 @@ import json
 import sqlite3
 from sqlite3 import Error
 import hashlib
+from appdirs import *
 ###############
 # Set the list of student names and records.It is meant to be a mirror of the actual file
 class_list=[]
@@ -55,6 +56,9 @@ stats_eval_right_export_coll={}
 sex_count_export={}
 # Define variable for storing lesson and hour stats
 lessonsHours_export={}
+## define path variables to user data
+UserData_dir=''
+User_rec_dir=''
 ################
 class Main_ui_class_Ins (QMainWindow):
 	def __init__(self):
@@ -64,13 +68,13 @@ class Main_ui_class_Ins (QMainWindow):
 		self.ui.actionRec1.setVisible(False)
 		self.ui.actionRec2.setVisible(False)
 		self.ui.actionRec3.setVisible(False)
-		self.ui.actionopen.triggered.connect(self.openFileDialog)
+		self.ui.actionopen.triggered.connect(lambda : self.open_any_file(0))
+		self.ui.actionRec1.triggered.connect(lambda : self.open_any_file(1))
+		self.ui.actionRec2.triggered.connect(lambda : self.open_any_file(2))
+		self.ui.actionRec3.triggered.connect(lambda : self.open_any_file(3))
 		self.ui.actionSave.triggered.connect(self.saveFileDialog)
 		self.ui.actionSaveAs.triggered.connect(self.saveASFileDialog)
 		self.ui.actionClose_Application.triggered.connect(self.closeAllW)
-		self.ui.actionRec1.triggered.connect(self.openFileDialogRec1)
-		self.ui.actionRec2.triggered.connect(self.openFileDialogRec2)
-		self.ui.actionRec3.triggered.connect(self.openFileDialogRec3)
 		self.ui.actionAdd_record.triggered.connect(self.add_row)
 		self.ui.actionInsert_Row.triggered.connect(self.insertrow)
 		self.ui.actionDelete_Row.triggered.connect(self.delete_row)
@@ -80,8 +84,10 @@ class Main_ui_class_Ins (QMainWindow):
 		self.ui.actionCut.triggered.connect(self.cut_item)
 		self.ui.actionDelete.triggered.connect(self.del_item)
 		self.ui.tableWidgetMain.itemClicked.connect(self.enable_edit_bar_top)
-		self.ui.actionBar_chart.triggered.connect(self.view_asbar)  
-		self.ui.actionGraph.triggered.connect(self.view_asline)  
+		self.ui.actionBar_chart.triggered.connect(lambda : self.view_sdt_as(1))
+		self.ui.actionGraph.triggered.connect(lambda : self.view_sdt_as(2))
+		self.ui.actionHistogram.triggered.connect(self.view_seq_Hist)
+		self.ui.actionView_all_sequences.triggered.connect(self.view_seq_All)
 		self.ui.actionAbout.triggered.connect(self.show_about) 
 		self.ui.actionGloss.triggered.connect(self.show_glossary)  
 		self.ui.actionStatistics.triggered.connect(self.show_Pedagogy) 
@@ -102,15 +108,25 @@ class Main_ui_class_Ins (QMainWindow):
 		self.set_Rec_files()
 		#self.setupSystemTrayIcon()
 		self.show()
-	
-	def openFileDialog(self):
+		
+	def open_any_file(self,*args):
 		global class_list
 		global HeadR
 		global max_seq
 		global f_name_dir
-		f_name=QFileDialog.getOpenFileName(self,'Open File','/home','Csv Files(*.csv)')
-		#f_name[0] is the actual path name in string format which is stored in f_name_dir
-		f_name_dir=f_name[0]
+		# mode args[0]=0 corresponds to opening of file from disk
+		if args[0]==0:
+			f_name=QFileDialog.getOpenFileName(self,'Open File','/home','Csv Files(*.csv)')
+			#f_name[0] is the actual path name in string format which is stored in f_name_dir
+			f_name_dir=f_name[0]
+		# open file from recent 1,2 and 3
+		if args[0]==1:
+			if recent_Files:
+				f_name_dir=recent_Files[-1]
+		if args[0]==2:
+			f_name_dir=recent_Files[-2]
+		if args[0]==3:
+			f_name_dir=recent_Files[-3]
 		if f_name_dir :
 			class_list=[]
 			HeadR=[]
@@ -138,112 +154,10 @@ class Main_ui_class_Ins (QMainWindow):
 				# Add file path to recent files
 				recent_Files.append(f_name_dir)
 				# Save recent file path to JSON file and create the file if it doesn't exist
-				with open('RX.json', 'w+') as f:
+				with open(User_rec_dir, 'w+') as f:
 					json.dump(recent_Files, f)
 				self.set_Rec_files()
-	def openFileDialogRec1(self):
-		'''opens the first recent file in recent_Files and set its text in actionRec1. It is a near identical copy of openFileDialog() with slight mod'''
-		global class_list
-		global HeadR
-		global max_seq
-		global recent_Files
-		global f_name_dir
-		if recent_Files:
-			class_list=[]
-			HeadR=[]
-			max_seq=0
-			#Search the most recent file
-			rec_f=recent_Files[-1]
-			f_name_dir=rec_f
-			try:
-				with open(rec_f,'r') as f:
-					reader=csv.DictReader(f)
-					HeadR=reader.fieldnames
-					for std in reader:
-						class_list.append(std)
-					self.ui.tableWidgetMain.clear()
-					self.write_table()
-					self.enable_edit_bar_bottom()
-			except OSError:
-				print('Cannot open file!')
-			else:
-				if HeadR:
-					max_seq=max([ eval(item[1]) for item in HeadR if len(item)==2 and item[0]=='S' and item[1].isdigit()])
-					self.ui.spinBoxFrom.setMaximum(max_seq)
-					self.ui.spinBoxTo.setMaximum(max_seq)
-				self.clear_stats()
-				recent_Files.append(rec_f)
-				with open('RX.json', 'w+') as f:
-					json.dump(recent_Files, f)
-				self.set_Rec_files()
-	def openFileDialogRec2(self):
-		'''opens the first recent file in recent_Files and set its text in actionRec2. It is a near identical copy of openFileDialog() with slight mod'''
-		global class_list
-		global HeadR
-		global max_seq
-		global recent_Files
-		global f_name_dir
-		if recent_Files:
-			class_list=[]
-			HeadR=[]
-			max_seq=0
-			rec_f=recent_Files[-2]
-			f_name_dir=rec_f
-			try:
-				with open(rec_f,'r') as f:
-					reader=csv.DictReader(f)
-					HeadR=reader.fieldnames
-					for std in reader:
-						class_list.append(std)
-					self.ui.tableWidgetMain.clear()
-					self.write_table()
-					self.enable_edit_bar_bottom()
-			except OSError:
-				print('Cannot open file!')
-			else:
-				if HeadR:
-					max_seq=max([ eval(item[1]) for item in HeadR if len(item)==2 and item[0]=='S' and item[1].isdigit()])
-					self.ui.spinBoxFrom.setMaximum(max_seq)
-					self.ui.spinBoxTo.setMaximum(max_seq)
-				self.clear_stats()
-				recent_Files.append(rec_f)
-				with open('RX.json', 'w+') as f:
-					json.dump(recent_Files, f)
-				self.set_Rec_files()
-	def openFileDialogRec3(self):
-		'''opens the first recent file in recent_Files and set its text in actionRec3. It is a near identical copy of openFileDialog() with slight mod'''
-		global class_list
-		global HeadR
-		global max_seq
-		global recent_Files
-		global f_name_dir
-		if recent_Files:
-			class_list=[]
-			HeadR=[]
-			max_seq=0
-			rec_f=recent_Files[-3]
-			f_name_dir=rec_f
-			try:
-				with open(rec_f,'r') as f:
-					reader=csv.DictReader(f)
-					HeadR=reader.fieldnames
-					for std in reader:
-						class_list.append(std)
-					self.ui.tableWidgetMain.clear()
-					self.write_table()
-					self.enable_edit_bar_bottom()
-			except OSError:
-				print('Cannot open file!')
-			else:
-				if HeadR:
-					max_seq=max([ eval(item[1]) for item in HeadR if len(item)==2 and item[0]=='S' and item[1].isdigit()])
-					self.ui.spinBoxFrom.setMaximum(max_seq)
-					self.ui.spinBoxTo.setMaximum(max_seq)
-				self.clear_stats()
-				recent_Files.append(rec_f)
-				with open('RX.json', 'w+') as f:
-					json.dump(recent_Files, f)
-				self.set_Rec_files()
+				
 	def write_table(self):
 		'''Writes class_list elements into the main table'''
 		global HeadR
@@ -324,6 +238,7 @@ class Main_ui_class_Ins (QMainWindow):
 		self.enable_BL_stats()
 		self.disable_BR_stats()
 		self.clear_stats()
+		self.ui.label_misc.setText('')
 	def enable_seq_choice_coll(self):
 		'''Enables certain functionalities if collective statistics is selected'''
 		self.ui.labelFrom.setText('Seq. Num.')
@@ -336,6 +251,7 @@ class Main_ui_class_Ins (QMainWindow):
 		self.enable_BL_stats()
 		self.enable_BR_stats()
 		self.clear_stats()
+		self.ui.label_misc.setText('')
 	def compute_stats(self):
 		'''Implements the compute function of the scores statistic window'''
 		global max_seq
@@ -439,13 +355,13 @@ class Main_ui_class_Ins (QMainWindow):
 	def set_stats_label_left(self,stats_left):
 		global cleared_stats
 		if 'mean' in stats_left:
-			self.ui.label_Mean.setText('{:.4f}'.format(stats_left['mean']))
+			self.ui.label_Mean.setText('{}'.format(stats_left['mean']))
 		if 'median' in stats_left:
-			self.ui.label_Median.setText('{:.4f}'.format(stats_left['median']))
+			self.ui.label_Median.setText('{}'.format(stats_left['median']))
 		if 'mode' in stats_left:
-			self.ui.label_Mode.setText('{:.4f}'.format(stats_left['mode']))
+			self.ui.label_Mode.setText('{}'.format(stats_left['mode']))
 		if 'stdv' in stats_left:
-			self.ui.label_Stdv.setText('{:.4f}'.format(stats_left['stdv']))
+			self.ui.label_Stdv.setText('{}'.format(stats_left['stdv']))
 		if ('min_scr' in stats_left) and ('max_scr' in stats_left):
 			self.ui.labelRange.setText('{:.2f}--{:.2f}'.format(stats_left['min_scr'],stats_left['max_scr']))
 		cleared_stats=False
@@ -454,15 +370,15 @@ class Main_ui_class_Ins (QMainWindow):
 		if 'n_boys_pass' in stats_right:
 			self.ui.label_Nboys.setText('{}'.format(stats_right['n_boys_pass']))
 		if 'n_boysP' in stats_right:
-			self.ui.label_NboysP.setText('{:.4f}'.format(stats_right['n_boysP']))
+			self.ui.label_NboysP.setText('{}'.format(stats_right['n_boysP']))
 		if 'n_girls_pass' in stats_right:
 			self.ui.label_NG.setText('{}'.format(stats_right['n_girls_pass']))
 		if 'n_girlsP' in stats_right:
-			self.ui.label_NGP.setText('{:.4f}'.format(stats_right['n_girlsP']))
+			self.ui.label_NGP.setText('{}'.format(stats_right['n_girlsP']))
 		if 'n_total_pass' in stats_right:
 			self.ui.label_T.setText('{}'.format(stats_right['n_total_pass']))
 		if 'n_total_passP' in stats_right:
-			self.ui.label_TP.setText('{:.4f}'.format(stats_right['n_total_passP']))
+			self.ui.label_TP.setText('{}'.format(stats_right['n_total_passP']))
 		cleared_stats=False
 	def clear_stats(self):
 		global cleared_stats
@@ -673,12 +589,14 @@ class Main_ui_class_Ins (QMainWindow):
 		item=QTableWidgetItem(None)
 		self.ui.tableWidgetMain.setItem(row,col,item)
 	def enable_edit_bar_bottom(self):
-		'''Allow user to activate certain elements from menu '''
+		'''Allow user to activate certain elements from menu after file is opened '''
 		self.ui.actionAdd_record.setEnabled(True)
 		self.ui.actionInsert_Row.setEnabled(True)
 		self.ui.actionDelete_Row.setEnabled(True)
 		self.ui.actionFind_record.setEnabled(True)
 		self.ui.menuView_Scores_As.setEnabled(True)
+		self.ui.actionView_all_sequences.setEnabled(True)
+		self.ui.menuView_Sequence_As.setEnabled(True)
 	def enable_edit_bar_top(self):
 		self.ui.actionCopy.setEnabled(True)
 		self.ui.actionPaste.setEnabled(True) 
@@ -694,44 +612,85 @@ class Main_ui_class_Ins (QMainWindow):
 		self.ui.actionDelete_Row.setDisabled(True)
 		self.ui.actionFind_record.setDisabled(True)
 		self.ui.menuView_Scores_As.setDisabled(True)
-	def view_asbar(self):
-		''' View scores as bar chat'''
+		self.ui.actionView_all_sequences.setDisabled(True)
+		self.ui.menuView_Sequence_As.setDisabled(True)
+	def view_sdt_as(self,*args):
+		''' View scores as bar chart or line graph'''
+		mode=args[0]
 		self.update_list()
 		row=self.ui.tableWidgetMain.currentRow()
 		if row!=None:
 			if max_seq:
 				score_str=['S'+str(i) for i in range(1,max_seq+1)]
 			sdt_name=class_list[row]['FULL_NAME']
-			scores=[class_list[row][key] for key in score_str]
-			scores_int=[eval(i) for i in scores]
+			scores_int=stf.fetch_scores_sdt(sdt_name,score_str,class_list)
 			f=graph.figure()
 			f.set_figwidth(6)
 			f.set_figheight(4)
-			graph.bar(score_str,scores_int)
+			if mode==1:
+				graph.bar(score_str,scores_int)
+			if mode==2:
+				graph.plot(score_str,scores_int)
 			graph.ylabel("Scores")
 			graph.title('Showing scores for {}'.format(sdt_name))
 			graph.show()
 			print(scores_int)
-	def view_asline(self):
-		'''view scores as line graph'''
+	def view_seq_Hist(self):
+		'''View sequence or column as histogram'''
 		self.update_list()
-		row=self.ui.tableWidgetMain.currentRow()
-		if row!=None:
-			if max_seq:
-				score_str=['S'+str(i) for i in range(1,max_seq+1)]
-			sdt_name=class_list[row]['FULL_NAME']
-			scores=[class_list[row][key] for key in score_str]
-			scores_int=[eval(i) for i in scores]
+		col=self.ui.tableWidgetMain.currentColumn()
+		if HeadR[col][0]=='S' and HeadR[col][1].isdigit() and len(HeadR[col])==2:
+			seq_num=int(HeadR[col][1])
+			scores_int=stf.fetch_scores_seq(seq_num,class_list)
 			f=graph.figure()
 			f.set_figwidth(6)
 			f.set_figheight(4)
-			graph.plot(score_str,scores_int)
-			graph.ylabel("Scores")
-			graph.title('Showing scores for {}'.format(sdt_name))
+			graph.hist(scores_int)
+			graph.xlabel("Scores")
+			graph.ylabel("Number of records")
+			graph.title('Distribution of scores for S{}'.format(seq_num))
 			graph.show()
-			print(scores_int)
+		else:
+			print('Not a valid column')
+	def view_seq_All(self):
+		'''View all sequences as Histograms in subplots'''
+		self.update_list()
+		#filer sequences from the header
+		HeadR_seq=[label for label in HeadR if label[0]=='S' and label[1].isdigit() and len(label)==2]
+		if HeadR_seq:
+			#define number of subplots
+			num_subplots=len(HeadR_seq)
+			#set default number of columns
+			if num_subplots<3:
+				columns=num_subplots
+			else:
+				columns=3
+			# set number of rows, add 1 if there's a remainder
+			rows, rem=divmod(num_subplots,3)
+			if rem==0:
+				figure, axis= graph.subplots(rows,columns)
+			else:
+				figure,axis= graph.subplots(rows+1,columns)
+			axis_row=0
+			axis_col=0
+			for i in range(num_subplots):
+				seq_num=int(HeadR_seq[i][1])
+				axis[axis_row,axis_col].hist(stf.fetch_scores_seq(seq_num,class_list))
+				axis[axis_row,axis_col].set_title("S{}".format(seq_num))
+				axis_col+=1
+				if axis_col==columns:
+					axis_row+=1
+					axis_col=0
+			#delete excess subplots 
+			if rem!=0:
+				while axis_col<columns:
+					graph.delaxes(axis[axis_row,axis_col])
+					axis_col+=1
+			graph.tight_layout()
+			graph.show()
+			
 	def set_Rec_files(self): 
-		''' trucncates the recent files to ensure it satisfies the constain of max_rec_files '''
+		''' trucncates the recent files to ensure it satisfies the constrain of max_rec_files '''
 		if recent_Files:
 			size_rec=len(recent_Files)
 			if size_rec>max_rec_files:
@@ -856,12 +815,12 @@ class pedagogical(QDialog):
 		self.ui.label_HDY.setText(str(HDY))
 		HTSHDS=self.compute_percentage2(HTS,HDS)
 		if HTSHDS!=None:
-			self.ui.label_HTSper.setText('{:.2f}'.format(HTSHDS))
+			self.ui.label_HTSper.setText('{}'.format(HTSHDS))
 		else:
 			self.ui.label_HTSper.setText('Undefined')
 		HTYHDY=self.compute_percentage2(HTY,HDY)
 		if HTYHDY!=None:
-			self.ui.label_HTYper.setText('{:.2f}'.format(HTYHDY))
+			self.ui.label_HTYper.setText('{}'.format(HTYHDY))
 		else:
 			self.ui.label_HTYper.setText('Undefined')
 		LDS=self.ui.spinBox_LDS.value()    
@@ -870,12 +829,12 @@ class pedagogical(QDialog):
 		LTY=self.ui.spinBox_LTY.value()
 		LTSLDS=self.compute_percentage2(LTS,LDS)
 		if LTSLDS!=None:
-			self.ui.label_LTSper.setText('{:.2f}'.format(LTSLDS))
+			self.ui.label_LTSper.setText('{}'.format(LTSLDS))
 		else:
 			self.ui.label_LTSper.setText('Undefined')
 		LTYLDY=self.compute_percentage2(LTY,LDY)
 		if LTYLDY!=None:
-			self.ui.label_LTYper.setText('{:.2f}'.format(LTYLDY))
+			self.ui.label_LTYper.setText('{}'.format(LTYLDY))
 		else:
 			self.ui.label_LTYper.setText('Undefined')
 		lessonsHours_export={'HDS':HDS, 'HTS':HTS ,'HTSHDS':HTSHDS ,'HDY':HDY ,'HTY':HTY ,'HTYHDY':HTYHDY ,'LDS':LDS ,'LTS':LTS ,\
@@ -902,7 +861,7 @@ class pedagogical(QDialog):
 			self.ui.pushButtonDates.setEnabled(True)
 	def compute_percentage2(self,metric_1,metric_2):
 		try:
-			return (metric_1/metric_2)*100
+			return round((metric_1/metric_2)*100,2)
 		except ZeroDivisionError:
 			print('Cannot divide by zero!')
 class advanced_w(QDialog):
@@ -923,7 +882,7 @@ class advanced_w(QDialog):
 		if class_list and f_name_dir!='':
 			if self.ui.radioButtonTop.isChecked() or self.ui.radioButton_Bottom.isChecked():
 				self.set_sup_sub_seq()
-			else:
+			if self.ui.radioButton_Imp.isChecked() or self.ui.radioButton_Dec.isChecked():
 				self.set_sup_sub_std()
 	def set_labels_N(self):
 		self.ui.label_NDec.setText(str(self.ui.spinBoxN.value()))
@@ -936,31 +895,32 @@ class advanced_w(QDialog):
 		sup_sdts,sub_sdts=stf.find_greatest_smallest_score_sq(class_list,seq_numstr,cutoff)
 		if self.ui.radioButtonTop.isChecked():
 			sup_names=[sdt['FULL_NAME'] for sdt in sup_sdts]
-			self.ui.listWidget_Top_bot.clear()
-			self.ui.listWidget_Top_bot.insertItems(0,sup_names)
-			count=self.ui.listWidget_Top_bot.count()
-			self.ui.label_count.setText(str(count)+'record(s)')
+			self.ui.tableWidget_reg_pred.clear()
+			self.Write_Advanced_Table(sup_names,1)
+			self.ui.label_count.setText(str(len(sup_names))+''+' record(s)')
 			
 		if self.ui.radioButton_Bottom.isChecked():
 			sub_names=[sdt['FULL_NAME'] for sdt in sub_sdts]
-			self.ui.listWidget_Top_bot.clear()
-			self.ui.listWidget_Top_bot.insertItems(0,sub_names)
-			count=self.ui.listWidget_Top_bot.count()
-			self.ui.label_count.setText(str(count)+''+' record(s)')
+			self.ui.tableWidget_reg_pred.clear()
+			self.Write_Advanced_Table(sub_names,1)
+			self.ui.label_count.setText(str(len(sub_names))+''+' record(s)')
 	def fetch_reg_scores(self,seq_range):
 		scores=[]
 		class_list_reg=[]
 		for student in class_list:
 			for i in seq_range:
-				if student[i]!='' and student[i].isnumeric():
+				if student[i].isnumeric():
 					if int(student[i])>=0: 
 						scores.append(student[i])
 			if scores:
 				scores_int=[eval(i) for i in scores]
 				x_scores=list(range(1,len(scores_int)+1))
-				slope=stf.compute_reg(x_scores,scores_int)
-				d={'FULL_NAME':student['FULL_NAME'],'Reg_score':slope}
-				class_list_reg.append(d)
+				if len(scores_int)<2:
+					pass
+				else:	
+					slope,intercept =stf.compute_reg(x_scores,scores_int)
+					d={'FULL_NAME':student['FULL_NAME'],'Reg_score':slope,'Next prediction':round(slope*(max_seq+1)+intercept,1)}
+					class_list_reg.append(d)
 			scores.clear()
 		return class_list_reg
 	def set_sup_sub_std(self):
@@ -971,17 +931,41 @@ class advanced_w(QDialog):
 		class_list_reg=self.fetch_reg_scores(seq_range_concat)
 		sup_sdts,sub_sdts=stf.find_greatest_smallest_score(class_list_reg,cutoff)
 		if self.ui.radioButton_Imp.isChecked():
-			sup_names=[sdt['FULL_NAME'] for sdt in sup_sdts]
-			self.ui.listWidget_Top_bot.clear()
-			self.ui.listWidget_Top_bot.insertItems(0,sup_names)
-			count=self.ui.listWidget_Top_bot.count()
-			self.ui.label_count.setText(str(count)+'record(s)')
+			self.ui.tableWidget_reg_pred.clear()
+			self.Write_Advanced_Table(sup_sdts,2)
+			self.ui.label_count.setText(str(len(sup_sdts))+''+' record(s)')
 		if self.ui.radioButton_Dec.isChecked():
-			sub_names=[sdt['FULL_NAME'] for sdt in sub_sdts]
-			self.ui.listWidget_Top_bot.clear()
-			self.ui.listWidget_Top_bot.insertItems(0,sub_names)
-			count=self.ui.listWidget_Top_bot.count()
-			self.ui.label_count.setText(str(count)+' record(s)')
+			self.ui.tableWidget_reg_pred.clear()
+			self.Write_Advanced_Table(sub_sdts,2)
+			self.ui.label_count.setText(str(len(sub_sdts))+''+' record(s)')
+	def Write_Advanced_Table(self,class_list_reg,mode):
+		'''Defines manner with which to write the advanced widget table. mode=1 means write only list of full names while mode=2 is for names and 
+		predictions'''
+		self.ui.tableWidget_reg_pred.setRowCount(len(class_list_reg))
+		#set mode to write table
+		self.ui.tableWidget_reg_pred.setColumnCount(mode)
+		Headr_fnc=lambda mode: ['FULL_NAME','Next prediction'] if mode==2 else ['FULL_NAME']
+		Headr=Headr_fnc(mode)
+		self.ui.tableWidget_reg_pred.setHorizontalHeaderLabels(Headr)
+		
+		tab_row=0
+		if mode==2:
+			for row in class_list_reg:
+				tab_col=0
+				# iterate over dictionary keys
+				for key in Headr:
+				#Fetch item correspondind to key
+					item=QTableWidgetItem(str(row[key]))
+					#add item at (tab_row,tab_col) to table
+					self.ui.tableWidget_reg_pred.setItem(tab_row,tab_col,item)
+					tab_col+=1
+				tab_row+=1
+		if mode==1:
+			tab_col=0
+			for row in class_list_reg:
+				item=QTableWidgetItem(row)
+				self.ui.tableWidget_reg_pred.setItem(tab_row,tab_col,item)
+				tab_row+=1
 class DBMain_W(QDialog):
 	def __init__(self):
 		super().__init__()
@@ -1068,9 +1052,14 @@ class DBMain_W(QDialog):
 		#Reference list to hold file names
 		global DbFiles
 		global curr_DB_fold
+		global UserData_dir
 		#Get current directory and locate the DBS folder 
-		curr_DB_dir=os.getcwd()
-		curr_DB_fold=os.path.join(curr_DB_dir,'DBS')
+		curr_DB_fold=os.path.join(UserData_dir,'DBS')
+		# create folder is not exist
+		try:
+			os.makedirs(curr_DB_fold)
+		except FileExistsError:
+			pass
 		# iterate over files in directory and subdirectory and cpature 3 variables for eeach file
 		for dirpath, dirnames, filenames in os.walk(curr_DB_fold):
 			for filename in filenames:
@@ -1494,9 +1483,18 @@ if __name__=="__main__":
 	app = QApplication(sys.argv)
 	#Define clipboard object for copying and pasting from the scores window
 	clipboard=app.clipboard()
+	#set user app directory
+	appname = "Classsroom-Insights"
+	appauthor = "LMS"
+	UserData_dir=user_data_dir(appname, appauthor)
+	try:
+		os.makedirs(UserData_dir)
+	except FileExistsError:
+		pass
+	User_rec_dir=os.path.join(UserData_dir,'RX.json')
 	#Try to load the previous dump of recent files (max 3)
 	try:
-		with open('RX.json', 'r') as f:
+		with open(User_rec_dir, 'r') as f:
 			recent_Files=json.load(f)
 			if len(recent_Files)>max_rec_files:
 				recent_Files=recent_Files[len(recent_Files)-3::1]

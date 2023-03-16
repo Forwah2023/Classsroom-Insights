@@ -11,7 +11,7 @@ def fetch_scores_seq(seq_num,class_list):
 	seq_numstr='S'+str(seq_num)
 	for student in class_list:
 	#Check is score for sequence N is not empty and is number
-		if student[seq_numstr]!='' and student[seq_numstr].isnumeric():
+		if student[seq_numstr].isnumeric():
 		#request only positive scores
 			if int(student[seq_numstr])>=0:
 				scores.append(student[seq_numstr]) 
@@ -39,7 +39,7 @@ def fetch_scores_sdt(sdt_n,seq_range,class_list):
 	#Search the student
 		if sdt_n == student['REG_NUM'] or sdt_n == student['FULL_NAME']:
 			for i in seq_range:
-				if student[i]!='' and student[i].isnumeric():
+				if student[i].isnumeric():
 					if int(student[i])>=0: 
 						scores.append(student[i])
 			#Leave loop once student is found
@@ -65,16 +65,16 @@ def General_statistics(scores_int,stats_op):
 	from statistics import mean,mode,median,pstdev
 	Gen_stats={}
 	if 1 in stats_op:
-		s_val=mean(scores_int)
+		s_val=round(mean(scores_int),2)
 		Gen_stats['mean']=s_val
 	if 2 in stats_op:
-		s_val=median(scores_int)
+		s_val=round(median(scores_int),2)
 		Gen_stats['median']=s_val
 	if 3 in stats_op:
-		s_val=mode(scores_int)
+		s_val=round(mode(scores_int),2)
 		Gen_stats['mode']=s_val        
 	if 4 in stats_op:
-		s_val=pstdev(scores_int)
+		s_val=round(pstdev(scores_int),2)
 		Gen_stats['stdv']=s_val
 	if 5 in stats_op:
 		max_sc=max(scores_int)
@@ -116,8 +116,8 @@ def find_greatest_smallest_score_sq(class_list,seq_numstr,cutoff):
 		class_list here is the regular classlist with FULL_NAMES ,seqences and sexes.
 	'''
 	import heapq
-	sup_sdts=heapq.nlargest(cutoff,class_list, key= lambda sdt: int(sdt['S'+seq_numstr]))
-	sub_sdts=heapq.nsmallest(cutoff,class_list, key= lambda sdt: int(sdt['S'+seq_numstr]))
+	sup_sdts=heapq.nlargest(cutoff,class_list, key= lambda sdt:int(sdt['S'+seq_numstr]) if sdt['S'+seq_numstr].isnumeric() else 0)
+	sub_sdts=heapq.nsmallest(cutoff,class_list, key= lambda sdt: int(sdt['S'+seq_numstr]) if sdt['S'+seq_numstr].isnumeric() else 0)
 	return [sup_sdts,sub_sdts]
 	
 def count_sexes(class_list):
@@ -137,9 +137,9 @@ def find_sdt_passed(class_list,seq_num,pass_thres,stats_op):
 	Gen_stats={}
 	seq_numstr='S'+str(seq_num)
 	#Search boy and girls above threshold(thres) as well as their total
-	BP=[sdt for sdt in class_list if sdt['SEX']=='M' and int(sdt[seq_numstr])>=pass_thres]
-	GP=[sdt for sdt in class_list if sdt['SEX']=='F' and int(sdt[seq_numstr])>=pass_thres]
-	TP=[sdt for sdt in class_list if int(sdt[seq_numstr])>=pass_thres]
+	BP=[sdt for sdt in class_list if sdt['SEX']=='M' and sdt[seq_numstr]!='' and int(sdt[seq_numstr])>=pass_thres]
+	GP=[sdt for sdt in class_list if sdt['SEX']=='F' and sdt[seq_numstr]!='' and int(sdt[seq_numstr])>=pass_thres]
+	TP=[sdt for sdt in class_list if sdt[seq_numstr]!='' and int(sdt[seq_numstr])>=pass_thres]
 	if 1 in stats_op:
 		Gen_stats['boys_pass']=BP
 		Gen_stats['n_boys_pass']=len(BP)
@@ -159,7 +159,7 @@ def compute_percentage(metric_size1,metric_size2):
 	''' Compute the percentage score of two metrics (1 and 2) and returns a message if division by zero occurs
 	'''
 	try:
-		return (len(metric_size1)/len(metric_size2))*100
+		return round((len(metric_size1)/len(metric_size2))*100,2)
 	except ZeroDivisionError:
 		print('Cannot divide by zero!')
 def compute_reg(x,y):
@@ -167,4 +167,4 @@ def compute_reg(x,y):
 	'''
 	from scipy import stats
 	slope, intercept, r, p, std_err = stats.linregress(x, y)
-	return slope
+	return slope, intercept
