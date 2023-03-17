@@ -623,7 +623,7 @@
     </property>
     <widget class="QMenu" name="menuView_Scores_As">
      <property name="title">
-      <string>View Scores As...</string>
+      <string>View row As...</string>
      </property>
      <addaction name="actionBar_chart"/>
      <addaction name="actionGraph"/>

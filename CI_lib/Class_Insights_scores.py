@@ -447,7 +447,7 @@ class Ui_MainWindow(object):
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuEdit.setTitle(_translate("MainWindow", "Edit"))
         self.menuView.setTitle(_translate("MainWindow", "View"))
-        self.menuView_Scores_As.setTitle(_translate("MainWindow", "View Scores As..."))
+        self.menuView_Scores_As.setTitle(_translate("MainWindow", "View row As..."))
         self.menuView_Sequence_As.setTitle(_translate("MainWindow", "View Sequence As..."))
         self.menuSearch.setTitle(_translate("MainWindow", "Search"))
         self.menuHelp.setTitle(_translate("MainWindow", "Help"))

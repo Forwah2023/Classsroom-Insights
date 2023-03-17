@@ -196,9 +196,9 @@ class Main_ui_class_Ins (QMainWindow):
 		global HeadR
 		global class_list
 		self.update_list()
-		options = QFileDialog.Options()
-		options |= QFileDialog.DontUseNativeDialog
-		fileName, _ = QFileDialog.getSaveFileName(self,"Save As...","","All Files (*);;Csv Files (*.csv)",options=options)
+		#options = QFileDialog.Options()
+		#options |= QFileDialog.DontUseNativeDialog
+		fileName, _ = QFileDialog.getSaveFileName(self,"Save As...","","Csv Files (*.csv)")#options=options
 		if fileName and class_list:
 			try:
 				with open(fileName,'w',encoding='UTF8', newline='') as f:
@@ -535,9 +535,11 @@ class Main_ui_class_Ins (QMainWindow):
 	def add_row(self):
 		global class_list
 		global row_size_max
+		global HeadR
 		if class_list:
 			row_size_max+=1
-			newrow={}
+			#creates empty dict with Header keys
+			newrow=dict(zip(HeadR,['']*len(HeadR)))
 			class_list.append(newrow)
 			self.ui.tableWidgetMain.setRowCount(row_size_max)
 		else:
@@ -549,7 +551,7 @@ class Main_ui_class_Ins (QMainWindow):
 			row=self.ui.tableWidgetMain.currentRow()
 			self.ui.tableWidgetMain.removeRow(row)
 			row_size_max-=1
-			self.ui.tableWidgetMain.setRowCount(row_size_max)
+			#self.ui.tableWidgetMain.setRowCount(row_size_max)
 			deleted_row=class_list.pop(row)
 			self.update_sex_count()
 			if deleted_row:
@@ -562,7 +564,8 @@ class Main_ui_class_Ins (QMainWindow):
 		if class_list:
 			row=self.ui.tableWidgetMain.currentRow()
 			self.ui.tableWidgetMain.insertRow(row)
-			class_list.insert(row,{})
+			newrow=dict(zip(HeadR,['']*len(HeadR)))
+			class_list.insert(row,newrow)
 			row_size_max+=1
 			#self.ui.tableWidgetMain.setRowCount(row_size_max)
 		else:
@@ -624,17 +627,18 @@ class Main_ui_class_Ins (QMainWindow):
 				score_str=['S'+str(i) for i in range(1,max_seq+1)]
 			sdt_name=class_list[row]['FULL_NAME']
 			scores_int=stf.fetch_scores_sdt(sdt_name,score_str,class_list)
-			f=graph.figure()
-			f.set_figwidth(6)
-			f.set_figheight(4)
-			if mode==1:
-				graph.bar(score_str,scores_int)
-			if mode==2:
-				graph.plot(score_str,scores_int)
-			graph.ylabel("Scores")
-			graph.title('Showing scores for {}'.format(sdt_name))
-			graph.show()
-			print(scores_int)
+			if scores_int: 
+				f=graph.figure()
+				f.set_figwidth(6)
+				f.set_figheight(4)
+				if mode==1:
+					graph.bar(score_str,scores_int)
+				if mode==2:
+					graph.plot(score_str,scores_int)
+				graph.ylabel("Scores")
+				graph.title('Showing scores for {}'.format(sdt_name))
+				graph.show()
+				print(scores_int)
 	def view_seq_Hist(self):
 		'''View sequence or column as histogram'''
 		self.update_list()
@@ -642,14 +646,15 @@ class Main_ui_class_Ins (QMainWindow):
 		if HeadR[col][0]=='S' and HeadR[col][1].isdigit() and len(HeadR[col])==2:
 			seq_num=int(HeadR[col][1])
 			scores_int=stf.fetch_scores_seq(seq_num,class_list)
-			f=graph.figure()
-			f.set_figwidth(6)
-			f.set_figheight(4)
-			graph.hist(scores_int)
-			graph.xlabel("Scores")
-			graph.ylabel("Number of records")
-			graph.title('Distribution of scores for S{}'.format(seq_num))
-			graph.show()
+			if scores_int:
+				f=graph.figure()
+				f.set_figwidth(6)
+				f.set_figheight(4)
+				graph.hist(scores_int)
+				graph.xlabel("Scores")
+				graph.ylabel("Number of records")
+				graph.title('Distribution of scores for S{}'.format(seq_num))
+				graph.show()
 		else:
 			print('Not a valid column')
 	def view_seq_All(self):
@@ -675,12 +680,14 @@ class Main_ui_class_Ins (QMainWindow):
 			axis_col=0
 			for i in range(num_subplots):
 				seq_num=int(HeadR_seq[i][1])
-				axis[axis_row,axis_col].hist(stf.fetch_scores_seq(seq_num,class_list))
-				axis[axis_row,axis_col].set_title("S{}".format(seq_num))
-				axis_col+=1
-				if axis_col==columns:
-					axis_row+=1
-					axis_col=0
+				scores_int=stf.fetch_scores_seq(seq_num,class_list)
+				if scores_int:
+					axis[axis_row,axis_col].hist(scores_int)
+					axis[axis_row,axis_col].set_title("S{}".format(seq_num))
+					axis_col+=1
+					if axis_col==columns:
+						axis_row+=1
+						axis_col=0
 			#delete excess subplots 
 			if rem!=0:
 				while axis_col<columns:
