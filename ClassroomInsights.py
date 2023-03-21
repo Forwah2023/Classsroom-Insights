@@ -349,7 +349,7 @@ class Main_ui_class_Ins (QMainWindow):
 			self.ui.label_misc.setText('Searching :{}'.format(sdt_id))
 			return sdt_id
 	def get_pass_thresh(self):
-		thresh,ok=QInputDialog.getInt(self, 'Pass threshold','Enter the pass threshold')
+		thresh,ok=QInputDialog.getDouble(self, 'Pass threshold','Enter the pass threshold')
 		if thresh and ok:
 			return thresh
 	def set_stats_label_left(self,stats_left):
@@ -996,7 +996,7 @@ class DBMain_W(QDialog):
 		self.ui.commandLinkButtonHome.clicked.connect(self.GoToHome)
 		self.ui.buttonBoxBD.accepted.connect(self.ChooseSelectedDB)
 		self.ui.buttonBoxBD.rejected.connect(self.DeselectedList)
-		self.ui.pushButton_ShowDB.clicked.connect(self.DisplayDBTable)
+		self.ui.spinBox_DbSeq.valueChanged.connect(self.DisplayDBTable)
 		self.ui.pushButtonAddtoDB.clicked.connect(self.Insert_rowsDB)
 		self.ui.pushButtonCopySel.clicked.connect(self.copy_selection_BD)
 		self.ui.pushButtonDRDB.clicked.connect(self.DeleteRowDB)
@@ -1161,6 +1161,7 @@ class DBMain_W(QDialog):
 			except OSError:
 				pass
 	def ChooseSelectedDB(self):
+		'''Accepts selection from list of databases '''
 		global curr_DB_fold
 		global DbFile_selected
 		ListDbFile=self.ui.listWidgetDB.currentItem()
@@ -1191,6 +1192,8 @@ class DBMain_W(QDialog):
 					self.ui.label_DB_Selected.setText('DB: '+file_name_text)
 				conn.commit()
 				conn.close()
+				# show sequence 1 in DB table
+				self.DisplayDBTable()
 	def DeselectedList(self):
 		self.ui.listWidgetDB.setCurrentItem(None)
 	def OpenNewDB(self):
@@ -1203,6 +1206,7 @@ class DBMain_W(QDialog):
 			c=conn.cursor()
 			c = conn.cursor()
 			c.execute('''SELECT count(name) FROM sqlite_master WHERE type='table' AND name='Users' ''')
+			# if Db locked, move to Sign-In page else go to edit page
 			if c.fetchone()[0]==1:
 				self.ui.tabWidget.setTabEnabled(1,True)
 				#find index of given page and set it as focus
@@ -1219,6 +1223,8 @@ class DBMain_W(QDialog):
 				self.ui.label_DB_Selected.setText('DB: '+file_name_text)
 			conn.commit()
 			conn.close()
+			# show sequence 1 on Db table
+			self.DisplayDBTable()
 	def check_Authorization(self):
 		'''Check if user has access to database based on password and username'''
 		conn=self.conToDB()
@@ -1247,11 +1253,12 @@ class DBMain_W(QDialog):
 				#update middle text
 				file_name_text=os.path.basename(DbFile_selected)
 				self.ui.label_DB_Selected.setText('DB: '+file_name_text)
-				
 			else:
 				self.ui.label_authorizedmessage.setText("Incorrect username or password!")
 			conn.commit()
 			conn.close()
+			#show sequence 1 in table
+			self.DisplayDBTable()
 	def GoToHome(self):
 		# Disables the sign-In form
 		self.ui.tabWidget.setCurrentWidget(self.ui.tabWidget.widget(0))
@@ -1378,7 +1385,7 @@ class DBMain_W(QDialog):
 						self.ui.label_star1.setText('Lesson statistics not available!')
 				conn.commit()
 				conn.close()
-				#refresh table
+				# refresh table before closing conn
 				self.DisplayDBTable()
 			else:
 				self.ui.label_star1.setText('Table does not exist')
@@ -1400,8 +1407,24 @@ class DBMain_W(QDialog):
 			c.execute('''SELECT count(name) FROM sqlite_master WHERE type='table' AND name=? ''',(StatsNumStr,))
 			if c.fetchone()[0]==1:
 				c.execute("SELECT * FROM "+StatsNumStr)	
-				#get selected row from table and delete from table
+				#get selected row from table and delete from DB
 				row2Del=self.ui.tableWidgetDB.currentRow()
+				# exit of row doesn't exist
+				if row2Del<0 or row2Del==None:
+					print('Empty table')
+					return
+				# see if row is total
+				istotals=self.ui.tableWidgetDB.item(row2Del,0).text()=='Totals'
+				if istotals:
+					pass
+				else:
+				#request for confirmation, exit if cancel
+					placehold_text='Delete row from sequence '+str(seq)+'?'+' Y or N'
+					confirm_del,ok=QInputDialog.getText(self, 'DELETE ROW!',placehold_text)
+					if confirm_del=='Y' and ok:
+						pass
+					else:
+						return
 				self.ui.tableWidgetDB.removeRow(row2Del)
 				#delete row from DB file if it exists
 				rows=c.fetchall()
@@ -1411,12 +1434,10 @@ class DBMain_W(QDialog):
 					c.execute("DELETE FROM "+StatsNumStr+" WHERE Class=? AND Teacher=?",(rowclass,rowinstr))
 				conn.commit()
 				conn.close()
-				#Refresh table
-				self.DisplayDBTable()
 			else:
 				self.ui.label_star1.setText('Table does not exist')
 	def InsertTotals(self):
-		'''Insert totals at the bottom of the DB table'''
+		'''Insert totals at the bottom of the DB table'''		
 		conn=self.conToDB()
 		if conn:
 			c=conn.cursor()
@@ -1429,6 +1450,9 @@ class DBMain_W(QDialog):
 			if c.fetchone()[0]==1:
 				#get row count on table
 				rownum=self.ui.tableWidgetDB.rowCount()
+				if rownum<=1:
+					print('Not enough argmuments in the table')
+					return
 				# increase table size 
 				self.ui.tableWidgetDB.setRowCount(rownum+1)
 				# GEt row to insert totals
@@ -1453,7 +1477,7 @@ class DBMain_W(QDialog):
 						sumcol=sum([val[0] for val in All_col if val[0]!=None])
 						#take average values for given columns
 						if label in ['Mean','Median','Mode','standard_dev','Min_scr','Max_scr']:
-							item=QTableWidgetItem(str(sumcol/len(All_col)))
+							item=QTableWidgetItem(str(round(sumcol/len(All_col))))
 						else:
 							item=QTableWidgetItem(str(sumcol))
 						self.ui.tableWidgetDB.setItem(rownumInst,colnum,item)
@@ -1463,7 +1487,7 @@ class DBMain_W(QDialog):
 					item1=float(self.ui.tableWidgetDB.item(rownumInst,colnum-1).text())
 					item2=float(self.ui.tableWidgetDB.item(rownumInst,colnum-2).text())
 					try:
-						item_12_per=(item1/item2)*100
+						item_12_per=round((item1/item2)*100,2)
 						item=QTableWidgetItem(str(item_12_per))
 						self.ui.tableWidgetDB.setItem(rownumInst,colnum,item)					
 					except ZeroDivisionError:
@@ -1473,7 +1497,7 @@ class DBMain_W(QDialog):
 					item1=float(self.ui.tableWidgetDB.item(rownumInst,colnum-1).text())
 					item2=float(self.ui.tableWidgetDB.item(rownumInst,2).text())
 					try:
-						item_12_per=(item1/item2)*100
+						item_12_per=round((item1/item2)*100,2)
 						item=QTableWidgetItem(str(item_12_per))
 						self.ui.tableWidgetDB.setItem(rownumInst,colnum,item)					
 					except ZeroDivisionError:
@@ -1482,7 +1506,6 @@ class DBMain_W(QDialog):
 				self.ui.label_star1.setText('Table does not exist')
 			conn.commit()
 			conn.close()
-			#self.DisplayDBTable()
 	#def fill_col_sum(self,row,col,):
 	
 	def conToDB(self):

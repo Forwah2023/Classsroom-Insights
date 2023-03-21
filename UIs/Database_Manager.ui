@@ -600,7 +600,7 @@
       <rect>
        <x>10</x>
        <y>170</y>
-       <width>181</width>
+       <width>111</width>
        <height>21</height>
       </rect>
      </property>
@@ -616,13 +616,6 @@
        <widget class="QSpinBox" name="spinBox_DbSeq">
         <property name="minimum">
          <number>1</number>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton_ShowDB">
-        <property name="text">
-         <string>Show </string>
         </property>
        </widget>
       </item>
