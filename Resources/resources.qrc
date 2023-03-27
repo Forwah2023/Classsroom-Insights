@@ -17,6 +17,11 @@
 		<file alias="search.png">Icons/magnifier.png</file>
 		<file alias="Databases.png">Icons/databases.png</file>
 		<file alias="calc.png">Icons/calculator.png</file>
+		<file alias="print.png">Icons/printer.png</file>
+		<file alias="edit.png">Icons/edit.png</file>
+		<file alias="key.png">Icons/key--arrow.png</file>
+		<file alias="info.png">Icons/information.png</file>
+		<file alias="tableAdd.png">Icons/table--plus.png</file>
 		
     </qresource>
 </RCC>

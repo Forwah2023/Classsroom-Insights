@@ -1,9 +1,9 @@
 import sys
 import os
 sys.path.append(sys.path.append(os.path.join(os.path.dirname(__file__), 'CI_lib')))# include path to imports
-from PyQt5.QtWidgets import QMainWindow,QDialog,QWidget,QApplication, QAction, QFileDialog,QTableWidgetItem, QInputDialog,QMenu,QSystemTrayIcon
+from PyQt5.QtWidgets import QMainWindow,QDialog,QWidget,QApplication, QAction, QFileDialog,QTableWidgetItem,QInputDialog,QMenu,QSystemTrayIcon
 from PyQt5 import QtWidgets, QtCore, QtGui 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QDate
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True) #enable highdpi scaling
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True) #use highdpi icons
 from PyQt5.QtGui import QIcon
@@ -22,6 +22,14 @@ import sqlite3
 from sqlite3 import Error
 import hashlib
 from appdirs import *
+# import pdf printing stuff
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import landscape,letter,A4
+from reportlab.platypus import  Table,TableStyle,Paragraph
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib import colors
+#import image stuff
+from PIL import Image
 ###############
 # Set the list of student names and records.It is meant to be a mirror of the actual file
 class_list=[]
@@ -1001,8 +1009,17 @@ class DBMain_W(QDialog):
 		self.ui.pushButtonCopySel.clicked.connect(self.copy_selection_BD)
 		self.ui.pushButtonDRDB.clicked.connect(self.DeleteRowDB)
 		self.ui.pushButtonInsrtTotals.clicked.connect(self.InsertTotals)
+		self.ui.commandLinkButtonToPrint.clicked.connect(self.Go_To_print)
+		self.ui.commandLinkButtonTo_Edit.clicked.connect(self.Go_To_Edit)
+		self.ui.pushButton_Generate.clicked.connect(self.print_DB)  
+		self.ui.pushButton_sel_logo.clicked.connect(self.Get_Logo)  
+		self.ui.pushButtonFileLoc.clicked.connect(lambda: os.startfile(UserData_dir))
+		# defines variables for pdf report
+		self.pdf_logo=None
 		self.ui.tabWidget.setTabEnabled(1,False)
 		self.ui.tabWidget.setTabEnabled(2,False)
+		self.ui.tabWidget.setTabEnabled(3,False)
+		self.ui.pushButtonFileLoc.setEnabled(False)
 		self.setDB_list()
 		self.show()
 	def hideNewDB(self):
@@ -1413,18 +1430,13 @@ class DBMain_W(QDialog):
 				if row2Del<0 or row2Del==None:
 					print('Empty table')
 					return
-				# see if row is total
-				istotals=self.ui.tableWidgetDB.item(row2Del,0).text()=='Totals'
-				if istotals:
+				#request for confirmation, exit if cancel
+				placehold_text='Delete row from sequence '+str(seq)+'?'+' Y or N'
+				confirm_del,ok=QInputDialog.getText(self, 'DELETE ROW!',placehold_text)
+				if confirm_del=='Y' and ok:
 					pass
 				else:
-				#request for confirmation, exit if cancel
-					placehold_text='Delete row from sequence '+str(seq)+'?'+' Y or N'
-					confirm_del,ok=QInputDialog.getText(self, 'DELETE ROW!',placehold_text)
-					if confirm_del=='Y' and ok:
-						pass
-					else:
-						return
+					return
 				self.ui.tableWidgetDB.removeRow(row2Del)
 				#delete row from DB file if it exists
 				rows=c.fetchall()
@@ -1441,7 +1453,7 @@ class DBMain_W(QDialog):
 		conn=self.conToDB()
 		if conn:
 			c=conn.cursor()
-			# Extract statistics from specified table
+			# Get current sequence and Extract statistics from specified table
 			seq=self.ui.spinBox_DbSeq.value()
 			# Table name
 			StatsNumStr="Statistics"+"_"+"S"+str(seq)
@@ -1457,11 +1469,12 @@ class DBMain_W(QDialog):
 				self.ui.tableWidgetDB.setRowCount(rownum+1)
 				# GEt row to insert totals
 				rownumInst=self.ui.tableWidgetDB.rowCount()-1
+				#Insert totals labels into table and DB
 				total_label=QTableWidgetItem('Totals')
 				self.ui.tableWidgetDB.setItem(rownumInst,0,total_label)
 				total_label=QTableWidgetItem('Totals')
 				self.ui.tableWidgetDB.setItem(rownumInst,1,total_label)
-				#Insert totals labels
+				c.execute("INSERT INTO "+StatsNumStr+" (Class,Teacher) VALUES (?,?)",('Totals','Totals'))
 				# specify columns to sum over
 				HeaderDB=['Class','Teacher','Roll','NBoys','NGirls','Mean','Median','Mode','standard_dev','Min_scr','Max_scr','Boys_pass',\
 				'Boys_pass_per','Girls_pass','Girls_pass_per','Total_pass','Total_pass_per','HD_seq','HT_seq','HT_seq_per','HD_yr','HT_yr',\
@@ -1477,10 +1490,14 @@ class DBMain_W(QDialog):
 						sumcol=sum([val[0] for val in All_col if val[0]!=None])
 						#take average values for given columns
 						if label in ['Mean','Median','Mode','standard_dev','Min_scr','Max_scr']:
-							item=QTableWidgetItem(str(round(sumcol/len(All_col))))
+							#prepare database and table items but subtract 1 from row count since totals have been included in DB
+							itemdb=round(sumcol/(len(All_col)-1),2)
+							item=QTableWidgetItem(str(itemdb))
 						else:
-							item=QTableWidgetItem(str(sumcol))
+							itemdb=sumcol
+							item=QTableWidgetItem(str(itemdb))
 						self.ui.tableWidgetDB.setItem(rownumInst,colnum,item)
+						c.execute( "UPDATE "+StatsNumStr+" SET "+label+"=? WHERE Class=? AND Teacher=?",(itemdb,'Totals','Totals'))
 					colnum+=1
 				#set position for computing total percentages from 'HT_seq_per' to end of row
 				for colnum in range(19,29,3):
@@ -1489,7 +1506,8 @@ class DBMain_W(QDialog):
 					try:
 						item_12_per=round((item1/item2)*100,2)
 						item=QTableWidgetItem(str(item_12_per))
-						self.ui.tableWidgetDB.setItem(rownumInst,colnum,item)					
+						self.ui.tableWidgetDB.setItem(rownumInst,colnum,item)
+						c.execute( "UPDATE "+StatsNumStr+" SET "+HeaderDB[colnum]+"=? WHERE Class=? AND Teacher=?",(item_12_per,'Totals','Totals'))
 					except ZeroDivisionError:
 						print('Cannot divide by zero!')
 				#set percentages from 'Boys_pass_per' to 'Total_pass_per'
@@ -1499,7 +1517,8 @@ class DBMain_W(QDialog):
 					try:
 						item_12_per=round((item1/item2)*100,2)
 						item=QTableWidgetItem(str(item_12_per))
-						self.ui.tableWidgetDB.setItem(rownumInst,colnum,item)					
+						self.ui.tableWidgetDB.setItem(rownumInst,colnum,item)
+						c.execute( "UPDATE "+StatsNumStr+" SET "+HeaderDB[colnum]+"=? WHERE Class=? AND Teacher=?",(item_12_per,'Totals','Totals'))
 					except ZeroDivisionError:
 						print('Cannot divide by zero!')
 			else:
@@ -1519,6 +1538,151 @@ class DBMain_W(QDialog):
 				return None
 			else:
 				return conn
+	def Go_To_print(self):
+		# sets print page as main tab
+		self.ui.tabWidget.setCurrentWidget(self.ui.tabWidget.widget(3))
+		self.ui.tabWidget.setTabEnabled(1,False)
+		self.ui.tabWidget.setTabEnabled(3,True)
+		#set list of headers
+		PrintHeader_list=HeaderDB=['Class','Teacher','Roll','NBoys','NGirls','Mean','Median','Mode','standard_dev','Min_scr','Max_scr','Boys_pass',\
+				'Boys_pass_per','Girls_pass','Girls_pass_per','Total_pass','Total_pass_per','HD_seq','HT_seq','HT_seq_per','HD_yr','HT_yr',\
+				'HT_yr_per','LD_seq','LT_seq','LT_seq_per','LD_yr','LT_yr','LT_yr_per']
+		self.ui.listWidget_print_fields.addItems(PrintHeader_list)
+	def Go_To_Edit(self):
+		# sets edit page as main tab
+		self.ui.tabWidget.setCurrentWidget(self.ui.tabWidget.widget(2))
+		self.ui.tabWidget.setTabEnabled(3,False)
+	def Get_Logo(self):
+		img_name=QFileDialog.getOpenFileName(self,'Open image','/home','JPEG Files(*.jpg); PNG Files(*.png)')
+		if img_name:
+			logo=Image.open(img_name[0])
+			self.pdf_logo=logo
+			self.ui.label_Pdf_print_err.setText('Logo selected!')
+	def print_DB(self):
+		'''Prints the pdf report from specified fields'''
+		#get logo
+		logo=self.pdf_logo
+		#get selected sequences
+		selected_seqs=self.ui.lineEdit_Seq_sel.text().split(',')
+		#filter out non-digits
+		selected_seqs=[i for i in selected_seqs if i.isdigit()]
+		if not selected_seqs:
+			self.ui.label_Pdf_print_err.setText('No sequence selected')
+			return
+		#get selected DB fields and convert into one long string for DB SELECT
+		selected_fields=self.ui.listWidget_print_fields.selectedItems()
+		selected_fields_str=''
+		for field in selected_fields:
+			selected_fields_str+=str(field.text())+','
+		selected_fields_str=selected_fields_str[:len(selected_fields_str)-1]
+		school_name=self.ui.lineEdit_Schl_name_print.text()
+		Author=self.ui.lineEdit_Author_name_print.text()
+		department=self.ui.lineEditdepartment.text()
+		today=QDate.currentDate().toString()
+		pdf_name='CI-report_'+today+'.pdf'
+		# set save pdf path
+		pdf_name_dir=os.path.join(UserData_dir,pdf_name)
+		pdf=canvas.Canvas(pdf_name_dir)
+		if logo:
+			pdf.drawInlineImage(logo, 10, 775,width=60,height=60)
+		if school_name:
+			pdf.setFont('Helvetica-Bold',11)
+			pdf.drawString(90, 770,'School Name:')
+			pdf.setFont('Helvetica',11)
+			pdf.drawString(170, 770,school_name)
+		if Author:
+			pdf.setFont('Helvetica-Bold',11)
+			pdf.drawString(90, 755,'Author:')
+			pdf.setFont('Helvetica',11)
+			pdf.drawString(140, 755,Author)
+		if department:
+			pdf.setFont('Helvetica-Bold',11)
+			pdf.drawString(90, 740,'Department:')
+			pdf.setFont('Helvetica',11)
+			pdf.drawString(160, 740,department)
+		#insert today
+		pdf.setFont('Helvetica-Bold',11)
+		pdf.drawString(90,725,'Date:')
+		pdf.setFont('Helvetica',11)
+		pdf.drawString(130,725,today)
+		#insert header line	
+		pdf.line(10,710,400,710)
+		#to store invalid sequences or empty tables
+		invalid_seqs=[]
+		#get page size
+		width,height=A4
+		# table styling
+		LIST_STYLE=TableStyle([('GRID',(0,1),(-1,-1),1,colors.grey),('FONTSIZE',(0,0),(-1,-1),8),('ALIGN', (0,0), (-1,-1), 'CENTER'), \
+		('TEXTCOLOR',(0,0),(0,0),colors.red)])
+		#determine number of subtables to use to display selection
+		print(len(selected_fields))
+		n_tab,rem=divmod(len(selected_fields),11)# 11 being the column group size
+		if rem!=0:
+			n_tab+=1
+		#set first table offset
+		firt_off=150
+		#set from left offset
+		from_left=30
+		#set available height
+		avail_h=height-150
+		#Create connection to database
+		conn=self.conToDB()
+		if conn:
+			c=conn.cursor()
+			# Table name
+			for seq in selected_seqs:
+				StatsNumStr="Statistics"+"_"+"S"+str(seq)
+				#determine if given table exists in DB
+				c.execute('''SELECT count(name) FROM sqlite_master WHERE type='table' AND name=? ''',(StatsNumStr,))
+				if c.fetchone()[0]==1:
+					c.execute("SELECT "+selected_fields_str+" FROM "+StatsNumStr)
+					StatsRows=c.fetchall()
+					data=[[str(item) for item in row] for row in StatsRows]
+					#insert header 
+					data.insert(0,[i.text() for i in selected_fields])
+					data.insert(0,[ '*' for i in range(len(selected_fields))])
+					#dataset 1
+					data1= [ row[:12] for row in data]
+					#dataset2
+					data2=[[row[:1] for row in data][i]+[row[12:20]for row in data][i] for i in range(len(data))] 
+					#dataset3
+					data3=[[row[:1] for row in data][i]+[row[20:] for row in data][i] for i in range(len(data))]
+					#group datasets
+					superdata=[data1,data2,data3]
+					col_labels=['1-12','13-20','21-END']
+					#col label counter
+					cl=0
+					for dat_i in superdata[:n_tab]:
+						#insert sequence number
+						dat_i[0][0]='S'+str(seq)+': '+col_labels[cl]
+						# create tables
+						t=Table(dat_i,splitByRow=1)
+						t.setStyle(LIST_STYLE)
+						tw,th=t.wrapOn(pdf,width,avail_h)
+						avail_h-=th
+						t.drawOn(pdf,from_left,avail_h)
+						avail_h-=10
+						cl+=1
+						firt_off=0
+					pdf.showPage()
+					avail_h=height-20
+			#draw comments after last table
+			comments=self.ui.textEdit_to_print.toPlainText()
+			if comments:
+				pdf.setFont('Helvetica-Bold',11)
+				pdf.drawString(from_left,height-50,'General comments')
+				pdf.setFont('Helvetica',11)
+				pstyle=getSampleStyleSheet()  
+				p=Paragraph(comments,pstyle["Normal"])
+				pw,ph=p.wrapOn(pdf,width-60,height-80)
+				p.drawOn(pdf,from_left, height-ph-80)
+			conn.commit()
+			conn.close()
+		pdf.save()
+		self.ui.pushButtonFileLoc.setEnabled(True)
+		
+			
+		
 ######################################MAIN#########
 if __name__=="__main__":
 	app = QApplication(sys.argv)
