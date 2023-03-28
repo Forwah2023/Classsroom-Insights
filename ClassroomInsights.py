@@ -1561,6 +1561,7 @@ class DBMain_W(QDialog):
 			self.ui.label_Pdf_print_err.setText('Logo selected!')
 	def print_DB(self):
 		'''Prints the pdf report from specified fields'''
+		page_Count=0
 		#get page size
 		width,height=A4
 		#get logo
@@ -1620,8 +1621,6 @@ class DBMain_W(QDialog):
 			pdf.drawString(pos,height-500,Doctitle)
 		pdf.showPage()
 		pdf.setFont('Helvetica',11)
-		#to store invalid sequences or empty tables
-		invalid_seqs=[]
 		# table styling
 		LIST_STYLE=TableStyle([('GRID',(0,1),(-1,-1),1,colors.grey),('FONTSIZE',(0,0),(-1,-1),8),('ALIGN', (0,0), (-1,-1), 'CENTER'), \
 		('TEXTCOLOR',(0,0),(0,0),colors.red)])
@@ -1676,8 +1675,12 @@ class DBMain_W(QDialog):
 						avail_h-=10
 						cl+=1
 						if longtable and cl<3:
+							page_Count+=1
+							pdf.drawString(width/2,10,str(page_Count))
 							pdf.showPage()
 							avail_h=height
+					page_Count+=1
+					pdf.drawString(width/2,10,str(page_Count))
 					pdf.showPage()
 					avail_h=height
 			#draw comments after last table
@@ -1690,6 +1693,8 @@ class DBMain_W(QDialog):
 				p=Paragraph(comments,pstyle["Normal"])
 				pw,ph=p.wrapOn(pdf,width-60,height-80)
 				p.drawOn(pdf,from_left, height-ph-80)
+				page_Count+=1
+				pdf.drawString(width/2,10,str(page_Count))
 			conn.commit()
 			conn.close()
 		pdf.save()
