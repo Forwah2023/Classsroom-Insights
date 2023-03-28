@@ -28,6 +28,8 @@ from reportlab.lib.pagesizes import landscape,letter,A4
 from reportlab.platypus import  Table,TableStyle,Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
+from reportlab.pdfbase.pdfmetrics import stringWidth
+
 #import image stuff
 from PIL import Image
 ###############
@@ -1553,13 +1555,14 @@ class DBMain_W(QDialog):
 		self.ui.tabWidget.setCurrentWidget(self.ui.tabWidget.widget(2))
 		self.ui.tabWidget.setTabEnabled(3,False)
 	def Get_Logo(self):
-		img_name=QFileDialog.getOpenFileName(self,'Open image','/home','JPEG Files(*.jpg); PNG Files(*.png)')
-		if img_name:
-			logo=Image.open(img_name[0])
-			self.pdf_logo=logo
+		img_name=QFileDialog.getOpenFileName(self,'Open image','','JPEG Files(*.jpg); PNG Files(*.png)')
+		if img_name[0]!='':
+			self.pdf_logo=img_name[0]#logo
 			self.ui.label_Pdf_print_err.setText('Logo selected!')
 	def print_DB(self):
 		'''Prints the pdf report from specified fields'''
+		#get page size
+		width,height=A4
 		#get logo
 		logo=self.pdf_logo
 		#get selected sequences
@@ -1579,52 +1582,59 @@ class DBMain_W(QDialog):
 		Author=self.ui.lineEdit_Author_name_print.text()
 		department=self.ui.lineEditdepartment.text()
 		today=QDate.currentDate().toString()
+		Doctitle=self.ui.lineEditTitle.text()
 		pdf_name='CI-report_'+today+'.pdf'
 		# set save pdf path
 		pdf_name_dir=os.path.join(UserData_dir,pdf_name)
 		pdf=canvas.Canvas(pdf_name_dir)
 		if logo:
-			pdf.drawInlineImage(logo, 10, 775,width=60,height=60)
+			pdf.drawImage(logo, 0.45*width, 0.85*height,width=70,height=70)
+		#insert header line	
+		pdf.setTitle('Departmental report')
+		pdf.line(100,0.8*height,500,0.8*height)
+		pdf.line(120,0.78*height,480,0.78*height)
 		if school_name:
 			pdf.setFont('Helvetica-Bold',11)
-			pdf.drawString(90, 770,'School Name:')
-			pdf.setFont('Helvetica',11)
-			pdf.drawString(170, 770,school_name)
+			pdf.drawString(90, 0.7*height,'School Name:')
+			pdf.setFont('Helvetica',12)
+			pdf.drawString(170, 0.7*height,school_name)
 		if Author:
 			pdf.setFont('Helvetica-Bold',11)
-			pdf.drawString(90, 755,'Author:')
-			pdf.setFont('Helvetica',11)
-			pdf.drawString(140, 755,Author)
+			pdf.drawString(90, 0.65*height,'Author:')
+			pdf.setFont('Helvetica',12)
+			pdf.drawString(140, 0.65*height,Author)
 		if department:
 			pdf.setFont('Helvetica-Bold',11)
-			pdf.drawString(90, 740,'Department:')
-			pdf.setFont('Helvetica',11)
-			pdf.drawString(160, 740,department)
+			pdf.drawString(90, 0.6*height,'Department:')
+			pdf.setFont('Helvetica',12)
+			pdf.drawString(160,0.6*height,department)
 		#insert today
 		pdf.setFont('Helvetica-Bold',11)
-		pdf.drawString(90,725,'Date:')
+		pdf.drawString(90,0.55*height,'Date:')
+		pdf.setFont('Helvetica',12)
+		pdf.drawString(130,0.55*height,today)
+		if Doctitle:
+			title_width=stringWidth(Doctitle,'Helvetica-Bold',20)
+			pos=(width-title_width)/2
+			pdf.setFont('Helvetica-Bold',20)	 
+			pdf.drawString(pos,height-500,Doctitle)
+		pdf.showPage()
 		pdf.setFont('Helvetica',11)
-		pdf.drawString(130,725,today)
-		#insert header line	
-		pdf.line(10,710,400,710)
 		#to store invalid sequences or empty tables
 		invalid_seqs=[]
-		#get page size
-		width,height=A4
 		# table styling
 		LIST_STYLE=TableStyle([('GRID',(0,1),(-1,-1),1,colors.grey),('FONTSIZE',(0,0),(-1,-1),8),('ALIGN', (0,0), (-1,-1), 'CENTER'), \
 		('TEXTCOLOR',(0,0),(0,0),colors.red)])
 		#determine number of subtables to use to display selection
-		print(len(selected_fields))
 		n_tab,rem=divmod(len(selected_fields),11)# 11 being the column group size
 		if rem!=0:
 			n_tab+=1
 		#set first table offset
-		firt_off=150
+		firt_off=30
 		#set from left offset
 		from_left=30
 		#set available height
-		avail_h=height-150
+		avail_h=height
 		#Create connection to database
 		conn=self.conToDB()
 		if conn:
@@ -1652,20 +1662,24 @@ class DBMain_W(QDialog):
 					col_labels=['1-12','13-20','21-END']
 					#col label counter
 					cl=0
+					#set long table condition
+					longtable=len(data)>13
 					for dat_i in superdata[:n_tab]:
 						#insert sequence number
 						dat_i[0][0]='S'+str(seq)+': '+col_labels[cl]
 						# create tables
-						t=Table(dat_i,splitByRow=1)
+						t=Table(dat_i)
 						t.setStyle(LIST_STYLE)
-						tw,th=t.wrapOn(pdf,width,avail_h)
+						tw,th=t.wrapOn(pdf,width,avail_h-firt_off)
 						avail_h-=th
-						t.drawOn(pdf,from_left,avail_h)
+						t.drawOn(pdf,from_left,avail_h-firt_off)
 						avail_h-=10
 						cl+=1
-						firt_off=0
+						if longtable and cl<3:
+							pdf.showPage()
+							avail_h=height
 					pdf.showPage()
-					avail_h=height-20
+					avail_h=height
 			#draw comments after last table
 			comments=self.ui.textEdit_to_print.toPlainText()
 			if comments:
