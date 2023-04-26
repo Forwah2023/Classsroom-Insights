@@ -1,6 +1,7 @@
 import sys
 import os
-sys.path.append(sys.path.append(os.path.join(os.path.dirname(__file__), 'CI_lib')))# include path to imports
+sys.path.append(os.path.join(os.path.dirname(__file__), 'CI_lib'))# include path to imports
+sys.path.append(os.path.join(os.path.dirname(__file__), 'CI_lib'))# include path to imports
 from PyQt5.QtWidgets import QMainWindow,QDialog,QWidget,QApplication, QAction, QFileDialog,QTableWidgetItem,QInputDialog,QMenu,QSystemTrayIcon
 from PyQt5 import QtWidgets, QtCore, QtGui 
 from PyQt5.QtCore import Qt, QDate
@@ -1560,20 +1561,16 @@ class DBMain_W(QDialog):
 			self.pdf_logo=img_name[0]#logo
 			self.ui.label_Pdf_print_err.setText('Logo selected!')
 	def print_DB(self):
-		'''Prints the pdf report from specified fields'''
+		'''Prints the pdf report from specified fields in DB'''
 		page_Count=0
-		#get page size
 		width,height=A4
-		#get logo
 		logo=self.pdf_logo
-		#get selected sequences
 		selected_seqs=self.ui.lineEdit_Seq_sel.text().split(',')
 		#filter out non-digits
 		selected_seqs=[i for i in selected_seqs if i.isdigit()]
 		if not selected_seqs:
 			self.ui.label_Pdf_print_err.setText('No sequence selected')
 			return
-		#get selected DB fields and convert into one long string for DB SELECT
 		selected_fields=self.ui.listWidget_print_fields.selectedItems()
 		selected_fields_str=''
 		for field in selected_fields:
@@ -1634,7 +1631,6 @@ class DBMain_W(QDialog):
 		from_left=30
 		#set available height
 		avail_h=height
-		#Create connection to database
 		conn=self.conToDB()
 		if conn:
 			c=conn.cursor()
@@ -1650,13 +1646,10 @@ class DBMain_W(QDialog):
 					#insert header 
 					data.insert(0,[i.text() for i in selected_fields])
 					data.insert(0,[ '*' for i in range(len(selected_fields))])
-					#dataset 1
+					#dataset 1,2 and 3
 					data1= [ row[:12] for row in data]
-					#dataset2
 					data2=[[row[:1] for row in data][i]+[row[12:20]for row in data][i] for i in range(len(data))] 
-					#dataset3
 					data3=[[row[:1] for row in data][i]+[row[20:] for row in data][i] for i in range(len(data))]
-					#group datasets
 					superdata=[data1,data2,data3]
 					col_labels=['1-12','13-20','21-END']
 					#col label counter
