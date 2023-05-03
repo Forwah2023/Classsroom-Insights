@@ -14,12 +14,12 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Form_gloss(object):
     def setupUi(self, Form_gloss):
         Form_gloss.setObjectName("Form_gloss")
-        Form_gloss.resize(382, 242)
+        Form_gloss.resize(384, 288)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/icons/mainIcon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Form_gloss.setWindowIcon(icon)
         self.textBrowser = QtWidgets.QTextBrowser(Form_gloss)
-        self.textBrowser.setGeometry(QtCore.QRect(30, 40, 321, 151))
+        self.textBrowser.setGeometry(QtCore.QRect(10, 30, 361, 241))
         self.textBrowser.setObjectName("textBrowser")
         self.label = QtWidgets.QLabel(Form_gloss)
         self.label.setGeometry(QtCore.QRect(90, 0, 191, 31))

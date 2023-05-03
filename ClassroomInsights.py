@@ -1,7 +1,6 @@
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), 'CI_lib'))# include path to imports
-sys.path.append(os.path.join(os.path.dirname(__file__), 'CI_lib'))# include path to imports
 from PyQt5.QtWidgets import QMainWindow,QDialog,QWidget,QApplication, QAction, QFileDialog,QTableWidgetItem,QInputDialog,QMenu,QSystemTrayIcon
 from PyQt5 import QtWidgets, QtCore, QtGui 
 from PyQt5.QtCore import Qt, QDate
@@ -112,11 +111,21 @@ class Main_ui_class_Ins (QMainWindow):
 		self.ui.radioButtonIndv.clicked.connect(self.enable_seq_choice_indv)
 		self.ui.pushButtonComp.clicked.connect(self.compute_stats)
 		self.ui.pushButtoncheck_uncheck.clicked.connect(self.check_uncheck_stats)
-		self.ui.pushButtonFind_Rec.clicked.connect(self.search_table2) 
-		self.ui.pushButtonInsert.clicked.connect(self.insertrow)
-		self.ui.pushButton_Add_Rec.clicked.connect(self.add_row)
-		self.ui.pushButtonDel.clicked.connect(self.delete_row)
 		self.set_Rec_files()
+		#setup messageboxes in status bar
+		self.label_curr_file=QtWidgets.QLabel(self)
+		self.label_curr_file.setStyleSheet('font-style: italic;font-weight: bold;')
+		self.statusBar().addWidget(self.label_curr_file)
+		self.label_misc=QtWidgets.QLabel('WELCOME!')
+		self.label_misc.setStyleSheet('color:red;font-weight: bold')
+		self.statusBar().addWidget(self.label_misc)
+		#setup toolbar
+		toolbar=QtWidgets.QToolBar('Edit')
+		toolbar.addAction(QIcon(':/icons/search.png'),'Search',self.search_table2)
+		toolbar.addAction(QIcon(':/icons/Insertrow.png'),'Insert row',self.insertrow)
+		toolbar.addAction(QIcon(':/icons/DbaseAdd.png'),'Add row',self.add_row)
+		toolbar.addAction(QIcon(':/icons/Deleterow.png'),'Delete row',self.delete_row)
+		self.addToolBar(QtCore.Qt.RightToolBarArea,toolbar)
 		#self.setupSystemTrayIcon()
 		self.show()
 		
@@ -153,7 +162,7 @@ class Main_ui_class_Ins (QMainWindow):
 					self.write_table()
 					self.enable_edit_bar_bottom()
 			except OSError:
-				print('Cannot open file!')
+				self.label_misc.setText('Cannot open file!')
 			else:
 			#Continue execution if no exception is raised
 				if HeadR:
@@ -200,7 +209,7 @@ class Main_ui_class_Ins (QMainWindow):
 		global sex_count_export
 		sex_count=stf.count_sexes(class_list)
 		if sex_count:
-			self.ui.label_curr_file.setText(f_name_dir.split('/')[-1]+': M={}, F={}'.format(sex_count[0], sex_count[2]))
+			self.label_curr_file.setText(f_name_dir.split('/')[-1]+': M={}, F={}'.format(sex_count[0], sex_count[2]))
 			sex_count_export={'M':sex_count[0],'F':sex_count[2],'T':sex_count[0]+sex_count[2]}
 	def saveASFileDialog(self):
 		''' Implements a regular saveAS'''
@@ -217,9 +226,9 @@ class Main_ui_class_Ins (QMainWindow):
 					writer.writeheader()
 					writer.writerows(class_list)
 			except OSError:
-				print('Problem saving file!')
+				self.label_misc.setText('Problem saving file!')
 		else:
-			print('No file loaded!')
+			self.label_misc.setText('No file loaded!')
 	def saveFileDialog(self):
 		'''Implements a regular save'''
 		global HeadR
@@ -233,9 +242,9 @@ class Main_ui_class_Ins (QMainWindow):
 					writer.writeheader()
 					writer.writerows(class_list)
 			except OSError:
-				print('Problem saving file!')
+				self.label_misc.setText('Problem saving file!')
 		else:
-			print('No file selected!')
+			self.label_misc.setText('No file selected!')
 		
 	def enable_seq_choice_indv(self): 
 		'''Enables certain functionalities if individual statistics is selected'''
@@ -249,7 +258,7 @@ class Main_ui_class_Ins (QMainWindow):
 		self.enable_BL_stats()
 		self.disable_BR_stats()
 		self.clear_stats()
-		self.ui.label_misc.setText('')
+		self.label_misc.setText('')
 	def enable_seq_choice_coll(self):
 		'''Enables certain functionalities if collective statistics is selected'''
 		self.ui.labelFrom.setText('Seq. Num.')
@@ -262,7 +271,7 @@ class Main_ui_class_Ins (QMainWindow):
 		self.enable_BL_stats()
 		self.enable_BR_stats()
 		self.clear_stats()
-		self.ui.label_misc.setText('')
+		self.label_misc.setText('')
 	def compute_stats(self):
 		'''Implements the compute function of the scores statistic window'''
 		global max_seq
@@ -275,12 +284,12 @@ class Main_ui_class_Ins (QMainWindow):
 			#check is user requested a statistical measure
 				if self.measure_state():
 					if self.ui.radioButtonIndv.isChecked():
-					#Fetch student's id
-						std_id=self.get_std_id()
-						# check is id is not empty and is in table
-						if std_id and self.search_table(std_id):
-							if self.ui.spinBoxFrom.value()<= self.ui.spinBoxTo.value():
-							#search and create sequence range as list of strings 
+						if self.ui.spinBoxFrom.value()<self.ui.spinBoxTo.value():
+							#Fetch student's id
+							std_id=self.get_std_id()
+							# check is id is not empty and is in table
+							if std_id and self.search_table(std_id):
+								#search and create sequence range as list of strings 
 								seq_range=list(range(self.ui.spinBoxFrom.value(), self.ui.spinBoxTo.value()+1))
 								seq_range_str=[str(i) for i in seq_range]
 								seq_range_concat=[x+y for x,y in zip(['S']*max_seq,seq_range_str)]
@@ -290,10 +299,10 @@ class Main_ui_class_Ins (QMainWindow):
 								if stats_eval_left:
 									self.set_stats_label_left(stats_eval_left)
 							else:
-								print('Check sequence range')
+								self.label_misc.setText('No input or record not found!')
 								return
 						else:
-							print('No input or record not found!')
+							self.label_misc.setText('Check sequence range')
 							return 
 					if self.ui.radioButtonColl.isChecked():
 					# get sequence number and read staistical options to the left
@@ -316,13 +325,13 @@ class Main_ui_class_Ins (QMainWindow):
 								stats_eval_right_export_coll={k:v for k,v in stats_eval_right.items() if k!='boys_pass' and k!='girls_pass'}
 								self.set_stats_label_right(stats_eval_right)
 				else:
-					print('Please select at least one type of measure')
+					self.label_misc.setText('Please select at least one type of measure')
 					return
 			else:
-				print('Please select at least one type of statistics!')
+				self.label_misc.setText('Please select at least one type of statistics!')
 				return 
 		else:
-			print('No file selected!')
+			self.label_misc.setText('No file selected!')
 			return
 					
 	def read_stats_ops_left(self):
@@ -357,7 +366,7 @@ class Main_ui_class_Ins (QMainWindow):
 	def get_std_id(self):
 		sdt_id,ok=QInputDialog.getText(self, 'Student Info.','Enter the student\'s name or registration number:')
 		if sdt_id and ok:
-			self.ui.label_misc.setText('Searching :{}'.format(sdt_id))
+			self.label_misc.setText('Searching :{}'.format(sdt_id))
 			return sdt_id
 	def get_pass_thresh(self):
 		thresh,ok=QInputDialog.getDouble(self, 'Pass threshold','Enter the pass threshold')
@@ -507,9 +516,9 @@ class Main_ui_class_Ins (QMainWindow):
 			found=True
 			item=matching_items[0]
 			self.ui.tableWidgetMain.setCurrentItem(item)
-			self.ui.label_misc.setText('Found match:{}'.format(std_id))
+			self.label_misc.setText('Found match:{}'.format(std_id))
 		else:
-			self.ui.label_misc.setText('{} not found!'.format(std_id))
+			self.label_misc.setText('{} not found!'.format(std_id))
 		return found
 	def search_table2(self):
 		'''Search on student id in table when the search action is clicked'''
@@ -517,7 +526,7 @@ class Main_ui_class_Ins (QMainWindow):
 			std_id=self.get_std_id()
 			self.search_table(std_id)
 		else:
-			print('No file selected')
+			self.label_misc.setText('No file selected')
 			return
 	def measure_state(self):
 		'''check whether a statistical measure is requensted'''
@@ -542,7 +551,7 @@ class Main_ui_class_Ins (QMainWindow):
 						class_list[row][str(key)]=''
 			self.update_sex_count()
 		else:
-			print('No file selected')
+			self.label_misc.setText('No file selected')
 	def add_row(self):
 		global class_list
 		global row_size_max
@@ -554,7 +563,7 @@ class Main_ui_class_Ins (QMainWindow):
 			class_list.append(newrow)
 			self.ui.tableWidgetMain.setRowCount(row_size_max)
 		else:
-			print('No file selected')
+			self.label_misc.setText('No file selected')
 		
 	def delete_row(self):
 		global row_size_max
@@ -566,9 +575,9 @@ class Main_ui_class_Ins (QMainWindow):
 			deleted_row=class_list.pop(row)
 			self.update_sex_count()
 			if deleted_row:
-				print('Deleted {}'.format(deleted_row['FULL_NAME']))
+				self.label_misc.setText('Deleted: {}'.format(deleted_row['FULL_NAME']))
 		else:
-			print('No file selected')
+			self.label_misc.setText('No file selected')
 	def insertrow(self):
 		global class_list
 		global row_size_max
@@ -580,7 +589,7 @@ class Main_ui_class_Ins (QMainWindow):
 			row_size_max+=1
 			#self.ui.tableWidgetMain.setRowCount(row_size_max)
 		else:
-			print('No file selected')
+			self.label_misc.setText('No file selected')
 	def copy_item(self):
 		row=self.ui.tableWidgetMain.currentRow()
 		col=self.ui.tableWidgetMain.currentColumn()
@@ -667,7 +676,7 @@ class Main_ui_class_Ins (QMainWindow):
 				graph.title('Distribution of scores for S{}'.format(seq_num))
 				graph.show()
 		else:
-			print('Not a valid column')
+			self.label_misc.setText('Not a valid column')
 	def view_seq_All(self):
 		'''View all sequences as Histograms in subplots'''
 		self.update_list()
@@ -755,7 +764,7 @@ class Main_ui_class_Ins (QMainWindow):
 				self.adv=advanced_w()
 				self.adv.show()
 			else:
-				print('No file selected!')
+				self.label_misc.setText('No file selected!')
 	def show_Pedagogy(self):
 		if hasattr(self,'pdgy'):
 			self.pdgy.show()
@@ -1434,9 +1443,8 @@ class DBMain_W(QDialog):
 					print('Empty table')
 					return
 				#request for confirmation, exit if cancel
-				placehold_text='Delete row from sequence '+str(seq)+'?'+' Y or N'
-				confirm_del,ok=QInputDialog.getText(self, 'DELETE ROW!',placehold_text)
-				if confirm_del=='Y' and ok:
+				response=QtWidgets.QMessageBox.question(self,'confirm delete','Delete row from sequence '+str(seq)+'?',QtWidgets.QMessageBox.Yes| QtWidgets.QMessageBox.Abort)
+				if response==QtWidgets.QMessageBox.Yes:
 					pass
 				else:
 					return
@@ -1643,6 +1651,9 @@ class DBMain_W(QDialog):
 					c.execute("SELECT "+selected_fields_str+" FROM "+StatsNumStr)
 					StatsRows=c.fetchall()
 					data=[[str(item) for item in row] for row in StatsRows]
+					if len(data)>30:
+						# set display message if number of number of rows exceeds 30
+						QtWidgets.QMessageBox.information(self,"About generated pdf","Current version only supports up to 30 rows of the database per page.")
 					#insert header 
 					data.insert(0,[i.text() for i in selected_fields])
 					data.insert(0,[ '*' for i in range(len(selected_fields))])
