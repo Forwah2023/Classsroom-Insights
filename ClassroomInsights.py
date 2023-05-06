@@ -69,6 +69,9 @@ lessonsHours_export={}
 ## define path variables to user data
 UserData_dir=''
 User_rec_dir=''
+#store hash of current file
+hashedOpen=''
+hashedClose=''
 ################
 class Main_ui_class_Ins (QMainWindow):
 	def __init__(self):
@@ -84,7 +87,7 @@ class Main_ui_class_Ins (QMainWindow):
 		self.ui.actionRec3.triggered.connect(lambda : self.open_any_file(3))
 		self.ui.actionSave.triggered.connect(self.saveFileDialog)
 		self.ui.actionSaveAs.triggered.connect(self.saveASFileDialog)
-		self.ui.actionClose_Application.triggered.connect(self.closeAllW)
+		self.ui.actionClose_Application.triggered.connect(self.close)
 		self.ui.actionAdd_record.triggered.connect(self.add_row)
 		self.ui.actionInsert_Row.triggered.connect(self.insertrow)
 		self.ui.actionDelete_Row.triggered.connect(self.delete_row)
@@ -158,6 +161,8 @@ class Main_ui_class_Ins (QMainWindow):
 					HeadR=reader.fieldnames
 					for std in reader:
 						class_list.append(std)
+					#generate hash for class_list
+					self.hashClasslist(0)
 					self.ui.tableWidgetMain.clear()
 					self.write_table()
 					self.enable_edit_bar_bottom()
@@ -177,7 +182,19 @@ class Main_ui_class_Ins (QMainWindow):
 				with open(User_rec_dir, 'w+') as f:
 					json.dump(recent_Files, f)
 				self.set_Rec_files()
-				
+	def hashClasslist(self,mode):
+		global hashedOpen,hashedClose,class_list
+		hasher=hashlib.sha256()
+		if class_list:
+			contents=[str(std.values()).encode('utf8') for std in class_list]
+			for bdata in contents:
+				hasher.update(bdata)
+			if mode==0:
+				hashedOpen=hasher.hexdigest()
+			else:
+				hashedClose=hasher.hexdigest()
+		else:
+			return 
 	def write_table(self):
 		'''Writes class_list elements into the main table'''
 		global HeadR
@@ -779,7 +796,16 @@ class Main_ui_class_Ins (QMainWindow):
 		else:
 			self.DBMWindow=DBMain_W()
 			self.DBMWindow.show()
-	def closeAllW(self):
+	def verifyFIleChangses(self):
+		#prompting the user to save changes if any
+		if hashedOpen!=hashedClose:
+			response=QtWidgets.QMessageBox.question(self,'Unsaved changes','You have unchanged changes. Save before proceeding?'\
+			,QtWidgets.QMessageBox.Yes| QtWidgets.QMessageBox.No)
+			if response==QtWidgets.QMessageBox.Yes:
+				self.saveFileDialog()
+	def closeEvent(self,Event):
+		'''Overrides the default close function for QMainWindow'''
+		#closes main window along with subwindows 
 		if hasattr(self,'abt'):
 			self.abt.close()
 		if hasattr(self,'gloss'):
@@ -790,7 +816,12 @@ class Main_ui_class_Ins (QMainWindow):
 			self.pdgy.close()
 		if hasattr(self,'DBMWindow'):
 			self.DBMWindow.close()
-		self.close()
+		#update classlist and run its hash
+		self.update_list()
+		self.hashClasslist(1)
+		self.verifyFIleChangses()
+		super().closeEvent(Event)
+		
 '''	def setupSystemTrayIcon(self):
 		self.tray_icon = QSystemTrayIcon(QIcon(":/mainIcon.png"))
 		tray_menu = QMenu()
