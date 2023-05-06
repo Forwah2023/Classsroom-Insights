@@ -11,7 +11,7 @@ def fetch_scores_seq(seq_num,class_list):
 	seq_numstr='S'+str(seq_num)
 	for student in class_list:
 	#Check is score for sequence N is not empty and is number
-		if student[seq_numstr].replace('.','',1).isdigit():
+		if is_float(student[seq_numstr]):
 		#request only positive scores
 			if float(student[seq_numstr])>=0:
 				scores.append(student[seq_numstr]) 
@@ -39,7 +39,7 @@ def fetch_scores_sdt(sdt_n,seq_range,class_list):
 	#Search the student
 		if sdt_n == student['REG_NUM'] or sdt_n == student['FULL_NAME']:
 			for i in seq_range:
-				if student[i].replace('.','',1).isdigit():
+				if is_float(student[i]):
 					if float(student[i])>=0: 
 						scores.append(student[i])
 			#Leave loop once student is found
@@ -116,8 +116,8 @@ def find_greatest_smallest_score_sq(class_list,seq_numstr,cutoff):
 		class_list here is the regular classlist with FULL_NAMES ,seqences and sexes.
 	'''
 	import heapq
-	sup_sdts=heapq.nlargest(cutoff,class_list, key= lambda sdt:float(sdt['S'+seq_numstr]) if sdt['S'+seq_numstr].replace('.','',1).isdigit() else 0)
-	sub_sdts=heapq.nsmallest(cutoff,class_list, key= lambda sdt: float(sdt['S'+seq_numstr]) if sdt['S'+seq_numstr].replace('.','',1).isdigit() else 0)
+	sup_sdts=heapq.nlargest(cutoff,class_list, key= lambda sdt:float(sdt['S'+seq_numstr]) if is_float(sdt['S'+seq_numstr]) else 0)
+	sub_sdts=heapq.nsmallest(cutoff,class_list, key= lambda sdt: float(sdt['S'+seq_numstr]) if is_float(sdt['S'+seq_numstr]) else 0)
 	return [sup_sdts,sub_sdts]
 	
 def count_sexes(class_list):
@@ -168,3 +168,9 @@ def compute_reg(x,y):
 	from scipy import stats
 	slope, intercept, r, p, std_err = stats.linregress(x, y)
 	return slope, intercept
+def is_float(string):
+	try:
+		float(string)
+		return True
+	except ValueError:
+		return False

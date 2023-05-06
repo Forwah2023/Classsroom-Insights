@@ -968,7 +968,7 @@ class advanced_w(QDialog):
 		class_list_reg=[]
 		for student in class_list:
 			for i in seq_range:
-				if student[i].replace('.','',1).isdigit() and float(student[i])>=0: 
+				if stf.is_float(student[i]) and float(student[i])>=0: 
 					scores.append(student[i])
 			if scores:
 				scores_int=[eval(i) for i in scores]
@@ -1012,8 +1012,10 @@ class advanced_w(QDialog):
 				tab_col=0
 				# iterate over dictionary keys
 				for key in Headr:
-				#Fetch item correspondind to key
+					#Fetch item correspondind to key
 					item=QTableWidgetItem(str(row[key]))
+					if stf.is_float(row[key]) and float(row[key])<0:
+						item.setBackground(QtGui.QColor(255,127,127))
 					#add item at (tab_row,tab_col) to table
 					self.ui.tableWidget_reg_pred.setItem(tab_row,tab_col,item)
 					tab_col+=1
