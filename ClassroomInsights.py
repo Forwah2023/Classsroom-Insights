@@ -175,7 +175,10 @@ class Main_ui_class_Ins (QMainWindow):
 					max_seq=max([ eval(item[1]) for item in HeadR if len(item)==2 and item[0]=='S' and item[1].isdigit()])
 					self.ui.spinBoxFrom.setMaximum(max_seq)
 					self.ui.spinBoxTo.setMaximum(max_seq)
+				#clear previous stats
 				self.clear_stats()
+				if hasattr(self,'pdgy'):
+					self.pdgy.clear_stats_pdgy()
 				# Add file path to recent files
 				recent_Files.append(f_name_dir)
 				# Save recent file path to JSON file and create the file if it doesn't exist
@@ -922,6 +925,13 @@ class pedagogical(QDialog):
 			return round((metric_1/metric_2)*100,2)
 		except ZeroDivisionError:
 			print('Cannot divide by zero!')
+	def clear_stats_pdgy(self):
+		self.ui.label_HDS.clear()
+		self.ui.label_HTSper.clear()
+		self.ui.label_HDY.clear()
+		self.ui.label_HTYper.clear()
+		self.ui.label_LTSper.clear()
+		self.ui.label_LTYper.clear()
 class advanced_w(QDialog):
 	def __init__(self):
 		super().__init__()
@@ -1597,7 +1607,7 @@ class DBMain_W(QDialog):
 		self.ui.tabWidget.setCurrentWidget(self.ui.tabWidget.widget(2))
 		self.ui.tabWidget.setTabEnabled(3,False)
 	def Get_Logo(self):
-		img_name=QFileDialog.getOpenFileName(self,'Open image','','JPEG Files(*.jpg); PNG Files(*.png)')
+		img_name=QFileDialog.getOpenFileName(self,'Open Image','',"Image Files (*.png *.jpg *.bmp)")
 		if img_name[0]!='':
 			self.pdf_logo=img_name[0]#logo
 			self.ui.label_Pdf_print_err.setText('Logo selected!')
