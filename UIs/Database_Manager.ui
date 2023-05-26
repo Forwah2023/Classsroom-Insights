@@ -40,7 +40,7 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>3</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="tab_base_info">
     <attribute name="icon">
@@ -527,7 +527,11 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLineEdit" name="lineEdit_Instructor"/>
+       <widget class="QLineEdit" name="lineEdit_Instructor">
+        <property name="maxLength">
+         <number>15</number>
+        </property>
+       </widget>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_3">
