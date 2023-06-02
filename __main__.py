@@ -140,6 +140,8 @@ class Main_ui_class_Ins (QMainWindow):
 		global HeadR
 		global max_seq
 		global f_name_dir
+		global recent_Files
+		global User_rec_dir
 		# mode args[0]=0 corresponds to opening of file from disk
 		if args[0]==0:
 			f_name=QFileDialog.getOpenFileName(self,'Open File','/home','Csv Files(*.csv)')
@@ -745,6 +747,7 @@ class Main_ui_class_Ins (QMainWindow):
 			
 	def set_Rec_files(self): 
 		''' trucncates the recent files to ensure it satisfies the constrain of max_rec_files '''
+		global recent_Files
 		if self.recent_Files:
 			size_rec=len(self.recent_Files)
 			if size_rec>max_rec_files:
@@ -1753,8 +1756,8 @@ class DBMain_W(QDialog):
 			conn.close()
 		pdf.save()
 		self.ui.pushButtonFileLoc.setEnabled(True)
-if __name__=="__main__":
-	##########################QAPPLICATION#################################
+def main():
+	global clipboard,UserData_dir,User_rec_dir,recent_Files
 	app = QApplication(sys.argv)
 	#Define clipboard object for copying and pasting from the scores window
 	clipboard=app.clipboard()
@@ -1778,3 +1781,6 @@ if __name__=="__main__":
 	w = Main_ui_class_Ins(recent_Files)
 	w.show()
 	sys.exit(app.exec_())
+if __name__=="__main__":
+	##########################QAPPLICATION#################################
+	main()

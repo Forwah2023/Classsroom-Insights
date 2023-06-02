@@ -22,10 +22,13 @@ colleagues for  more comprehensive perspective on performance.
 1. Install python 3 (developed, tested and run on python 3.9) from the official website.
 2. Install PyQt5, scipy,matplotlib  from command line using python's pip (package manager) via:
  ```
- python -m pip install PyQt5, scipy, matplotlib 
+ python -m pip install PyQt5, scipy, matplotlib,appdirs,reportlab 
  ```
-3. Open the *ClassroomInsights.py* with python's *IDLE* editor and run
-4. An example CSV file: *Example_Class1.csv* is provided wih the app. Open this file from the app.
+3. Open the *__main__.py* with python's *IDLE* editor and run, or Install as a package:
+ ```
+ pip install Classsroom-Insights-1.2.tar.gz
+  ```
+4. An example CSV file: *Example_Class1.csv* is provided wih the app (in the docs folder). Open this file from the app.
 
 ###### Desktop installation
 1. Download the *Classroom-Insights.exe* setup from [SourceForge](https://sourceforge.net/projects/classsroom-insights/)
@@ -38,6 +41,8 @@ colleagues for  more comprehensive perspective on performance.
 * QT designer
 * scipy
 * matplotlib
+* appdirs
+* reportlab
 
 # IMPORTANT NOTES
 1. An Example .csv file is provided with the installer and located in the install directory folder: Example Input. 
