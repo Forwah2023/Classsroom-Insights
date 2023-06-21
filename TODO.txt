@@ -4,3 +4,6 @@ when the pedagogy widget is activated, it can load this data and update itself a
 3. Add Qsettings object and widget to allow users modify some program fucntionalities. 
 4. Add fucntion to include personal timetable from database or create one. 
 5. Add fucntionality to fill pedagogy widget from datbase info.
+6. Add functions to tidy data, and perhaps scale scores to different values. It should request former max score and
+ sequences over which to apply this scaling.
+7. Add possibility to delete multiple rows from DB or class list
