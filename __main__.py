@@ -1366,7 +1366,7 @@ class DBMain_W(QDialog):
 		conn=self.conToDB()
 		if conn:
 			c=conn.cursor()
-			# Extract statistics from specified table
+			# Extract statistics from specified table and update spinBox_DbSeq
 			seq=self.ui.spinBox_DbSeq.value()
 			# Table name
 			StatsNumStr="Statistics"+"_"+"S"+str(seq)
@@ -1415,7 +1415,7 @@ class DBMain_W(QDialog):
 		if conn:
 			c=conn.cursor()
 			# Read inputs from users(Teacher, class , sequence)
-			seq=self.ui.spinBoxDB_Bottom.value()
+			seq=self.ui.spinBox_DbSeq.value()
 			# Table name
 			StatsNumStr="Statistics"+"_"+"S"+str(seq)
 			intructor=self.ui.lineEdit_Instructor.text()
@@ -1473,7 +1473,7 @@ class DBMain_W(QDialog):
 				# refresh table before closing conn
 				self.DisplayDBTable()
 			else:
-				self.ui.label_star1.setText('Table does not exist')
+				self.ui.label_star1.setText('Table does not exist!')
 	def copy_selection_BD(self):
 		res=self.ui.tableWidgetDB.selectedItems()
 		if res:

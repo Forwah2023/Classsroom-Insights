@@ -486,10 +486,10 @@
     <widget class="Line" name="line_2">
      <property name="geometry">
       <rect>
-       <x>0</x>
+       <x>10</x>
        <y>240</y>
-       <width>461</width>
-       <height>16</height>
+       <width>451</width>
+       <height>20</height>
       </rect>
      </property>
      <property name="orientation">
@@ -499,8 +499,8 @@
     <widget class="QPushButton" name="pushButtonAddtoDB">
      <property name="geometry">
       <rect>
-       <x>180</x>
-       <y>340</y>
+       <x>160</x>
+       <y>320</y>
        <width>101</width>
        <height>21</height>
       </rect>
@@ -515,7 +515,7 @@
        <x>10</x>
        <y>260</y>
        <width>251</width>
-       <height>82</height>
+       <height>61</height>
       </rect>
      </property>
      <layout class="QFormLayout" name="formLayout_3">
@@ -543,27 +543,13 @@
       <item row="1" column="1">
        <widget class="QLineEdit" name="lineEdit_class_spc"/>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>Sequence Number</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QSpinBox" name="spinBoxDB_Bottom">
-        <property name="minimum">
-         <number>1</number>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
     <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
        <x>290</x>
-       <y>260</y>
+       <y>250</y>
        <width>171</width>
        <height>71</height>
       </rect>
@@ -596,7 +582,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>340</y>
+       <y>350</y>
        <width>71</width>
        <height>31</height>
       </rect>
@@ -619,10 +605,10 @@
     <widget class="QTableWidget" name="tableWidgetDB">
      <property name="geometry">
       <rect>
-       <x>0</x>
+       <x>10</x>
        <y>0</y>
-       <width>461</width>
-       <height>171</height>
+       <width>451</width>
+       <height>161</height>
       </rect>
      </property>
     </widget>
@@ -726,7 +712,7 @@
      <property name="geometry">
       <rect>
        <x>380</x>
-       <y>340</y>
+       <y>350</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -744,6 +730,19 @@
      <property name="icon">
       <iconset resource="../Resources/resources.qrc">
        <normaloff>:/icons/rightArr.png</normaloff>:/icons/rightArr.png</iconset>
+     </property>
+    </widget>
+    <widget class="Line" name="line_8">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>340</y>
+       <width>451</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </widget>
