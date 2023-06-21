@@ -443,6 +443,9 @@ class Main_ui_class_Ins (QMainWindow):
 			self.ui.label_NGP.setText('')
 			self.ui.label_T.setText('')
 			self.ui.label_TP.setText('')
+			stats_eval_left_export_coll={}
+			stats_eval_right_export_coll={}
+			sex_count_export={}
 			cleared_stats=True
 	def disable_BR_stats(self):
 		self.ui.checkBoxNboys.setVisible(False)
@@ -600,7 +603,6 @@ class Main_ui_class_Ins (QMainWindow):
 			row=self.ui.tableWidgetMain.currentRow()
 			self.ui.tableWidgetMain.removeRow(row)
 			row_size_max-=1
-			#self.ui.tableWidgetMain.setRowCount(row_size_max)
 			deleted_row=class_list.pop(row)
 			self.update_sex_count()
 			if deleted_row:
@@ -942,6 +944,7 @@ class pedagogical(QDialog):
 		self.ui.label_HTYper.clear()
 		self.ui.label_LTSper.clear()
 		self.ui.label_LTYper.clear()
+		lessonsHours_export={}
 class advanced_w(QDialog):
 	def __init__(self):
 		super().__init__()
