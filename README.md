@@ -18,15 +18,18 @@ colleagues for  a more comprehensive perspective on performance.
 ## INSTALLATION
 
 ###### Python installation
-1. Install Python 3 (developed, tested, and run on Python 3.9) from the official website.
-2. Install PyQt5, scipy,matplotlib  from the command line using Python's pip (package manager) via:
- ```
- python -m pip install PyQt5, scipy, matplotlib,appdirs,reportlab 
- ```
-3. Open the *__main__.py* with python's *IDLE* editor and run, or Install as a package:
- ```
- pip install Classroom-Insights-1.2.tar.gz
+1. From the command line:
+    ```
+  python setup.py install
+   ```
+2. or using the release file coupled with the command:
+   ```
+    pip install Classroom-Insights-1.2.tar.gz
+   ```
+3. And run __main__.py:
   ```
+  python __main__.py
+   ```
 4. An example CSV file: *Example_Class1.csv* is provided with the app (in the docs folder). Open this file from the app.
 
 ###### Desktop installation
@@ -34,6 +37,15 @@ colleagues for  a more comprehensive perspective on performance.
 2. Install and run.
 
 # Developing
+1. Add functionality for teachers to import their classroom lessons and hours programs for a given year. That way,
+when the pedagogy widget is activated, it can load this data and update itself automatically.
+2. Include a remember functionality in the pedagogy window as well, so that it can keep track of previous progress.
+3.  Add Qsettings object and widget to allow users to modify some program functionalities.
+4. Add a function to include a personal timetable from the database or create one.
+5.  Add functionality to fill the pedagogy widget from database info.
+6. Add functions to tidy data, and perhaps scale scores to different values. It should request the former max score and
+ sequences over which to apply this scaling.
+7. Add possibility to delete multiple rows from DB or class list
 ## Built With
 * Python 3.9
 * Pyqt5
