@@ -1,10 +1,5 @@
 # Classroom-Insights
-   Classroom Insights is a simple software designed to compute various statistical metrics from a CSV file/database of students' and teachers' performance records. 
-It was designed to be the teacher's companion when drafting end-of-sequence or end-of-year reports on classroom performances. This software features
-tools to evaluate the teacher's own pedagogic performance against expected metrics. Classroom Insights will allow the teacher to have a unique
- perspective on their performance as well as on those of their students, and provide insights into how these performance indices may be improved upon.
-As a bonus, Classroom Insights is designed to allow for archiving of statistics per sequence into a database file which can be shared with other 
-colleagues for  a more comprehensive perspective on performance.
+   Classroom Insights is a software designed to compute various statistical metrics from a CSV file/database of students' and teachers' performance records. It was intended to be the teacher's companion when drafting end-of-sequence or end-of-year reports on classroom performances after evaluations. This software features multiple tools to provide the teacher with a unique perspective on their students' performances across evaluations. This software makes use of quantitative and graphical methods to provide insights. As a bonus, Classroom Insights is designed to allow for archiving statistics per sequence into a database file that can be shared with other colleagues for a more comprehensive perspective on performance. Furthermore, this software leverages the power of machine learning to predict students' performances on exams.
 ![Main](https://github.com/Forwah2023/Classsroom-Insights/assets/123673169/fb1b3eac-e486-4132-81be-067afc79e515)
 
 ## IMPORTANT FEATURES
