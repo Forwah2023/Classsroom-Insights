@@ -311,7 +311,8 @@ class Main_ui_class_Ins (QMainWindow):
 		if class_list and HeadR:
 			if self.ui.radioButtonIndv.isChecked() or self.ui.radioButtonColl.isChecked():
 			#check is user requested a statistical measure
-				if self.measure_state():
+				choices_Stats=self.measure_state()
+				if choices_Stats[0] or choices_Stats[1]:
 					if self.ui.radioButtonIndv.isChecked():
 						if self.ui.spinBoxFrom.value()<self.ui.spinBoxTo.value():
 							#Fetch student's id
@@ -344,15 +345,16 @@ class Main_ui_class_Ins (QMainWindow):
 							#call fucntion to display stats
 							self.set_stats_label_left(stats_eval_left)
 							#search for the threshold which defines pass(fail)
-						pass_thres=self.get_pass_thresh()
-						if pass_thres:
-						#read right statistical options
-							stats_op_right=self.read_stats_ops_right()
-							stats_eval_right=stf.find_sdt_passed(class_list,seq_num,pass_thres,stats_op_right)
-							if stats_eval_right:
-								# export stats to global variable but filter list of boys and girls prior
-								stats_eval_right_export_coll={k:v for k,v in stats_eval_right.items() if k!='boys_pass' and k!='girls_pass'}
-								self.set_stats_label_right(stats_eval_right)
+						if choices_Stats[1]:
+							pass_thres=self.get_pass_thresh()
+							if pass_thres:
+							#read right statistical options
+								stats_op_right=self.read_stats_ops_right()
+								stats_eval_right=stf.find_sdt_passed(class_list,seq_num,pass_thres,stats_op_right)
+								if stats_eval_right:
+									# export stats to global variable but filter list of boys and girls prior
+									stats_eval_right_export_coll={k:v for k,v in stats_eval_right.items() if k!='boys_pass' and k!='girls_pass'}
+									self.set_stats_label_right(stats_eval_right)
 				else:
 					self.label_misc.setText('Please select at least one type of measure')
 					return
@@ -561,13 +563,14 @@ class Main_ui_class_Ins (QMainWindow):
 			self.label_misc.setText('No file selected')
 			return
 	def measure_state(self):
-		'''check whether a statistical measure is requensted'''
-		measure_bol=False
+		'''check whether a statistical measure is requested'''
+		measure_bol_lEFT=False
+		measure_bol_RIGHT=False
 		if self.ui.checkBoxMean.isChecked() or self.ui.checkBoxMedian.isChecked() or self.ui.checkBoxMode.isChecked() or self.ui.checkBoxStddev.isChecked() or self.ui.checkBoxRange.isChecked():
-			measure_bol=True
+			measure_bol_lEFT=True
 		if self.ui.checkBoxNboys.isChecked() or self.ui.checkBoxNboysP.isChecked() or self.ui.checkBoxNgirls.isChecked() or self.ui.checkBoxNgirlsP.isChecked() or self.ui.checkBoxTotal.isChecked() or self.ui.checkBoxTotalP.isChecked():
-			measure_bol=True
-		return measure_bol	
+			measure_bol_RIGHT=True
+		return (measure_bol_lEFT,measure_bol_RIGHT)	
 	def update_list(self):
 		'''Updates the classlist variable when table is modified or when save or saveAS is initiated'''
 		global class_list
