@@ -16,11 +16,11 @@ colleagues for  a more comprehensive perspective on performance.
 6. Archives the various statistics into a database for future reference and comprehensive statistical view.
 
 ## INSTALLATION
-
 ###### Python installation
+
 1. From the command line:
     ```
-  python setup.py install
+     python setup.py install
    ```
 2. or using the release file coupled with the command:
    ```
@@ -28,7 +28,7 @@ colleagues for  a more comprehensive perspective on performance.
    ```
 3. And run __main__.py:
   ```
-  python __main__.py
+     python __main__.py
    ```
 4. An example CSV file: *Example_Class1.csv* is provided with the app (in the docs folder). Open this file from the app.
 
@@ -45,7 +45,7 @@ when the pedagogy widget is activated, it can load this data and update itself a
 5.  Add functionality to fill the pedagogy widget from database info.
 6. Add functions to tidy data, and perhaps scale scores to different values. It should request the former max score and
  sequences over which to apply this scaling.
-7. Add possibility to delete multiple rows from DB or class list
+7. Add the possibility to delete multiple rows from DB or class list
 ## Built With
 * Python 3.9
 * Pyqt5
