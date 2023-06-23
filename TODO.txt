@@ -1,9 +1,9 @@
-1. Add functionality for teachers to import their classroon lessons and hours programs for a given year. That way,
+1. Add functionality for teachers to import their classroom lessons and hours programs for a given year. That way,
 when the pedagogy widget is activated, it can load this data and update itself automatically.
-2. Include a remeber functionality in the pedagogy window as well, so that it can keep track of previous progress.
-3. Add Qsettings object and widget to allow users modify some program fucntionalities. 
-4. Add fucntion to include personal timetable from database or create one. 
-5. Add fucntionality to fill pedagogy widget from datbase info.
-6. Add functions to tidy data, and perhaps scale scores to different values. It should request former max score and
+2. Include a remember functionality in the pedagogy window as well, so that it can keep track of previous progress.
+3. Add Qsettings object and widget to allow users to modify some program functionalities. 
+4. Add a function to include a personal timetable from the database or create one. 
+5. Add functionality to fill the pedagogy widget from database info.
+6. Add functions to tidy data, and perhaps scale scores to different values. It should request the former max score and
  sequences over which to apply this scaling.
-7. Add possibility to delete multiple rows from DB or class list
+7. Add the possibility to delete multiple rows from DB or class list
