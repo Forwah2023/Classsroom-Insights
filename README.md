@@ -16,16 +16,16 @@
 1. From the command line:
     ```
      python setup.py install
+	```
+   and 
+2. Run the package from command line as
    ```
-2. or using the release file coupled with the command:
+   ClassIns
    ```
-    pip install Classroom-Insights-1.2.tar.gz
-   ```
-3. And run __main__.py:
-  ```
-     python __main__.py
-   ```
-4. An example CSV file: *Example_Class1.csv* is provided with the app (in the docs folder). Open this file from the app.
+3. Or simply run __main__.py after completing step 1:
+	```
+	python __main__.py
+	```
 
 ###### Desktop installation
 1. Download the *Classroom-Insights.exe* setup from [SourceForge](https://sourceforge.net/projects/classsroom-insights/)
