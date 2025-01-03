@@ -4,4 +4,4 @@ Pillow==11.1.0
 PyQt5==5.15.11
 reportlab==4.2.5
 scipy==1.15.0
-setuptools==69.0.2
+setuptools>=70.0.0
